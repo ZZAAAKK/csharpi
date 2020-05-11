@@ -1,0 +1,13 @@
+C:\Users\zakth\csharpi\bin\Debug\netcoreapp3.1\csharpi.exe
+C:\Users\zakth\csharpi\bin\Debug\netcoreapp3.1\csharpi.deps.json
+C:\Users\zakth\csharpi\bin\Debug\netcoreapp3.1\csharpi.runtimeconfig.json
+C:\Users\zakth\csharpi\bin\Debug\netcoreapp3.1\csharpi.runtimeconfig.dev.json
+C:\Users\zakth\csharpi\bin\Debug\netcoreapp3.1\csharpi.dll
+C:\Users\zakth\csharpi\bin\Debug\netcoreapp3.1\csharpi.pdb
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.csprojAssemblyReference.cache
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.csproj.CoreCompileInputs.cache
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.AssemblyInfoInputs.cache
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.AssemblyInfo.cs
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.dll
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.pdb
+C:\Users\zakth\csharpi\obj\Debug\netcoreapp3.1\csharpi.genruntimeconfig.cache
