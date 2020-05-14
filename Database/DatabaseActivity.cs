@@ -19,9 +19,6 @@ namespace csharpi.Database
         
         internal static async Task<(bool connectionValid, bool databaseExists)> TestDatabaseSettings()
         {
-            string connectionString =
-                $"server=localhost;port=3360;username=swiftbot; password={Configuration.GetDBPassword()}";
-            
             MySqlConnection connection;
             
             await new LogMessage(LogSeverity.Info, "Database Validation", "Verifying database settings.").PrintToConsole();
@@ -29,7 +26,7 @@ namespace csharpi.Database
             // test to see if connection is valid.
             try
             {
-                connection = new MySqlConnection(connectionString);
+                connection = new MySqlConnection(ConnectionString);
                 connection.Open();
                 connection.Close();
                 await new LogMessage(LogSeverity.Info, "Database Validation", "Connection to database established.").PrintToConsole();
@@ -40,14 +37,12 @@ namespace csharpi.Database
                 return (false, false);
             }
             
-            // test to see if database exists - required to be after connection is valid.
-            connectionString = $"server=localhost;port=3360;username=swiftbot; password={Configuration.GetDBPassword()}; database=SlipperyWhiskers; CharSet=utf8mb4";
-            
+            // test to see if database exists - required to be after connection is valid.            
             await new LogMessage(LogSeverity.Info, "Database Validation", "Checking for database.").PrintToConsole();
             
             try
             {
-                connection = new MySqlConnection(connectionString);
+                connection = new MySqlConnection(ConnectionString);
                 connection.Open();
                 connection.Close();
                 
@@ -64,9 +59,7 @@ namespace csharpi.Database
 
         private static MySqlConnection GetDatabaseConnection()
         {
-            string connectionString = $"server=localhost; port=3360; username=swiftbot; password={Configuration.GetDBPassword()}; database=SlipperyWhiskers; CharSet=utf8mb4";
-            
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            MySqlConnection connection = new MySqlConnection(ConnectionString);
             
             try
             {
@@ -137,5 +130,7 @@ namespace csharpi.Database
             }
             
         }
+
+        static string ConnectionString { get => $"Server=127.0.0.1; Database=SlipperyWhiskers; Uid=swiftbot; Pwd={Configuration.GetDBPassword()}"; }
     }
 }
