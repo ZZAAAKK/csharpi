@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using csharpi.Services;
+using csharpi.Database;
 
 namespace csharpi
 {
@@ -31,6 +32,8 @@ namespace csharpi
 
             // build the configuration and assign to _config          
             _config = _builder.Build();
+
+            DatabaseActivity.EnsureExists();
         }
 
         public async Task MainAsync()
@@ -67,7 +70,7 @@ namespace csharpi
 
         private Task ReadyAsync()
         {
-            Console.WriteLine($"Connected as -> [{_client.CurrentUser}] :)");
+            Console.WriteLine($"Connected as -> [{_client.CurrentUser}]");
             return Task.CompletedTask;
         }
 
