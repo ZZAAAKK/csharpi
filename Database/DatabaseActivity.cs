@@ -20,7 +20,7 @@ namespace csharpi.Database
         internal static async Task<(bool connectionValid, bool databaseExists)> TestDatabaseSettings()
         {
             string connectionString =
-                $"server=raspberrypi;port=3360;user id=swiftbot; password={Configuration.GetDBPassword()}";
+                $"server=localhost;port=3360;username=swiftbot; password={Configuration.GetDBPassword()}";
             
             MySqlConnection connection;
             
@@ -41,7 +41,7 @@ namespace csharpi.Database
             }
             
             // test to see if database exists - required to be after connection is valid.
-            connectionString = $"server=localhost;port=3360;user id=swiftbot; password={Configuration.GetDBPassword()}; database=SlipperyWhiskers; CharSet=utf8mb4";
+            connectionString = $"server=localhost;port=3360;username=swiftbot; password={Configuration.GetDBPassword()}; database=SlipperyWhiskers; CharSet=utf8mb4";
             
             await new LogMessage(LogSeverity.Info, "Database Validation", "Checking for database.").PrintToConsole();
             
@@ -64,7 +64,7 @@ namespace csharpi.Database
 
         private static MySqlConnection GetDatabaseConnection()
         {
-            string connectionString = $"server=localhost; port=3360; user id=swiftbot; password={Configuration.GetDBPassword()}; database=SlipperyWhiskers; CharSet=utf8mb4";
+            string connectionString = $"server=localhost; port=3360; username=swiftbot; password={Configuration.GetDBPassword()}; database=SlipperyWhiskers; CharSet=utf8mb4";
             
             MySqlConnection connection = new MySqlConnection(connectionString);
             
