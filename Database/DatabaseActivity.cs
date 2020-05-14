@@ -20,7 +20,7 @@ namespace csharpi.Database
         internal static async Task<(bool connectionValid, bool databaseExists)> TestDatabaseSettings()
         {
             string connectionString =
-                $"server=localhost;port=3360;user id=swiftbot; password={Configuration.GetDBPassword()}";
+                $"server=raspberrypi;port=3360;user id=swiftbot; password={Configuration.GetDBPassword()}";
             
             MySqlConnection connection;
             
