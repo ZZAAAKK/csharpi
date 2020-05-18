@@ -11,7 +11,7 @@ namespace csharpi.Database
 {
     public static class DatabaseActivity
     {        
-        static string ConnectionString { get => Configuration.GetConnectionString(); }
+        public static string ConnectionString { get => Configuration.GetConnectionString(); }
 
         internal static void EnsureExists()
         {
@@ -142,6 +142,9 @@ namespace csharpi.Database
 
         public static List<string[]> GetWeekDaysData()
         {
+            MySqlConnection connection = new MySqlConnection(ConnectionString);
+            connection.Open();
+
             List<string[]> rowStrings = new List<string[]>();
 
             using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", GetDatabaseConnection())))
@@ -155,6 +158,7 @@ namespace csharpi.Database
                 }
             }
             
+            connection.Close();
             return rowStrings;
         }
     }

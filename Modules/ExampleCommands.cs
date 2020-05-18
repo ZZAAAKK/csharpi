@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using csharpi.Extensions;
+using csharpi.Database;
 using csharpi.Common;
 using MySql.Data;
 using MySql.Data.MySqlClient;
@@ -139,6 +140,9 @@ namespace csharpi.Modules
         [Command("weekdays")]
         public async Task GetWeekdays()
         {
+            MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+            connection.Open();
+
             List<string[]> rowStrings = new List<string[]>();
 
             using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", new MySqlConnection(csharpi.Common.Configuration.GetConnectionString()))))
@@ -151,6 +155,8 @@ namespace csharpi.Modules
                     rowStrings.Add(r.RowStrings());
                 }
             }
+
+            connection.Close();
             
             var sb = new StringBuilder();
             var embed = new EmbedBuilder();
