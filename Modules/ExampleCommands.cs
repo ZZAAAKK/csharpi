@@ -188,8 +188,54 @@ namespace csharpi.Modules
 
             switch (args == "help" ? "help" : args == "?" ? "?" : args.Substring(0, args.IndexOf(' ')).ToLower())
             {
+                case "users":
+                    await ReplyAsync("Returns a list of current users, when it's working...");
+                    return;
+                    //break;
                 case "adduser":
+                    try 
+                    {
+                        MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+                        connection.Open();
 
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Set_User", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@userName", args.Replace("adduser ", string.Empty))
+                            }, 
+                            connection);
+
+                        command.ExecuteNonQuery();
+
+                        sb.AppendLine($"Successfully added user *{args.Replace("adduser ", string.Empty)}*");
+                    }
+                    catch (Exception e)
+                    {
+                        sb.AppendLine($"Failed to create user *{args.Replace("adduser ", string.Empty)}* with error {e.Message}");
+                    }
+                    break;
+                case "removeuser":
+                    try 
+                    {
+                        MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+                        connection.Open();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Delete_User", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@userName", args.Replace("removeuser ", string.Empty))
+                            }, 
+                            connection);
+
+                        command.ExecuteNonQuery();
+
+                        sb.AppendLine($"Successfully removed user *{args.Replace("removeuser ", string.Empty)}*");
+                    }
+                    catch (Exception e)
+                    {
+                        sb.AppendLine($"Failed to remove user *{args.Replace("removeuser ", string.Empty)}* with error {e.Message}");
+                    }
+                    break;
                 case "?":
                 case "help":
                     embed.WithColor(new Color(0, 0, 0));
@@ -201,6 +247,8 @@ namespace csharpi.Modules
                     sb.AppendLine("removeuser [@User Name]");
                     sb.AppendLine("addtime [day]; [period]");
                     sb.AppendLine("removetime [day]");
+                    sb.AppendLine("users");
+                    sb.AppendLine("schedule");
                     sb.AppendLine("help");
                     sb.AppendLine("?");
                     sb.AppendLine();
