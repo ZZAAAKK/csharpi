@@ -14,8 +14,7 @@ namespace csharpi.Common
             var _builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile(path: "config.json");  
-
-            // build the configuration and assign to _config          
+         
             IConfiguration _config = _builder.Build();
 
             return _config["ConnectionString"];

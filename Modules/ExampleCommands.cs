@@ -75,7 +75,6 @@ namespace csharpi.Modules
             var embed = new EmbedBuilder();
 
             var user = Context.User;
-            string question = Context.Message.ToString().Replace("$8ball ", string.Empty).Replace("$ask ", string.Empty);
 
             var replies = new List<string>();
 
@@ -99,7 +98,7 @@ namespace csharpi.Modules
             {
                 var answer = replies[new Random().Next(replies.Count - 1)];
                 
-                sb.AppendLine($"You asked: {question}...");
+                sb.AppendLine($"You asked: {args}...");
                 sb.AppendLine();
                 sb.AppendLine($"...your answer is {answer.ToString()}");
 
@@ -176,6 +175,49 @@ namespace csharpi.Modules
                 sb.AppendLine(a);
             }
 
+            embed.Description = sb.ToString();
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+        [Command("scheduling")]
+        public async Task SchedulingCommand([Remainder]string args = null)
+        {
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+            var user = Context.User;
+
+            switch (args == "help" ? "help" : args == "?" ? "?" : args.Substring(0, args.IndexOf(' ')).ToLower())
+            {
+                case "adduser":
+
+                case "?":
+                case "help":
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Scheduling help";
+
+                    sb.AppendLine("You can use the following commands in the scheduler:");
+                    sb.AppendLine();
+                    sb.AppendLine("adduser [@User Name]");
+                    sb.AppendLine("removeuser [@User Name]");
+                    sb.AppendLine("addtime [day]; [period]");
+                    sb.AppendLine("removetime [day]");
+                    sb.AppendLine("help");
+                    sb.AppendLine("?");
+                    sb.AppendLine();
+                    sb.AppendLine("Please note the following:");
+                    sb.AppendLine("1) You must be a user in the scheduling server before attempting to schedule times.");
+                    sb.AppendLine("2) This is a trust-based system so all members of the Discord server can add and remove users, however if this is abused then roles will be introduced.");
+                    sb.AppendLine("3) You do not need to specify a user when scheduling times as it refers to your own times only.");
+                    break;
+                default:
+                    sb.AppendLine($"Sorry @{user.Username}, I didn't understand that.");
+                    sb.AppendLine();
+                    sb.AppendLine("Please type '$scheduling help' or '$scheduling ?' for a list of commands.");
+                    sb.AppendLine();
+                    sb.AppendLine("*Please note: not all commands are currently available*");
+                    break;
+            }
+            
             embed.Description = sb.ToString();
             await ReplyAsync(null, false, embed.Build());
         }
