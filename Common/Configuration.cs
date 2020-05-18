@@ -9,7 +9,7 @@ namespace csharpi.Common
 {
     public class Configuration
     {
-        public static string GetDBPassword()
+        public static string GetConnectionString()
         {
             var _builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
@@ -18,7 +18,7 @@ namespace csharpi.Common
             // build the configuration and assign to _config          
             IConfiguration _config = _builder.Build();
 
-            return _config["DatabasePassword"];
+            return _config["ConnectionString"];
         }
     }
 }

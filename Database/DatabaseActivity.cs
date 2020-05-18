@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
@@ -10,11 +11,13 @@ namespace csharpi.Database
 {
     public static class DatabaseActivity
     {        
+        static string ConnectionString { get => Configuration.GetConnectionString(); }
+
         internal static void EnsureExists()
         {
             TestDatabaseSettings().GetAwaiter().GetResult();
             
-            Methods.PrintConsoleSplitLine();
+            PrintConsoleSplitLine();
         }
         
         internal static async Task<(bool connectionValid, bool databaseExists)> TestDatabaseSettings()
@@ -131,6 +134,28 @@ namespace csharpi.Database
             
         }
 
-        static string ConnectionString { get => $"Server=127.0.0.1; Database=SlipperyWhiskers; Uid=swiftbot; Pwd={Configuration.GetDBPassword()}"; }
+        public static async void PrintConsoleSplitLine()
+        {
+            await new LogMessage(LogSeverity.Info, "",
+                "----------------------------------------------------------------------").PrintToConsole();
+        }
+
+        public static List<string[]> GetWeekDaysData()
+        {
+            List<string[]> rowStrings = new List<string[]>();
+
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", GetDatabaseConnection())))
+            {
+                DataSet data = new DataSet();
+                adapter.Fill(data);
+
+                foreach (DataRow r in data.Tables[0].Rows)
+                {
+                    rowStrings.Add(r.RowStrings());
+                }
+            }
+            
+            return rowStrings;
+        }
     }
 }
