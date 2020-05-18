@@ -145,7 +145,7 @@ namespace csharpi.Modules
 
             List<string[]> rowStrings = new List<string[]>();
 
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", new MySqlConnection(csharpi.Common.Configuration.GetConnectionString()))))
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", connection)))
             {
                 DataSet data = new DataSet();
                 adapter.Fill(data);
