@@ -201,7 +201,7 @@ namespace csharpi.Modules
                         MySqlCommand command = new MySqlStoredProcedure("usp_Set_User", 
                             new MySqlParameter[] 
                             {
-                                new MySqlParameter("@userName", args.Replace("adduser ", string.Empty))
+                                new MySqlParameter("@name", args.Replace("adduser ", string.Empty))
                             }, 
                             connection);
 
@@ -223,7 +223,7 @@ namespace csharpi.Modules
                         MySqlCommand command = new MySqlStoredProcedure("usp_Delete_User", 
                             new MySqlParameter[] 
                             {
-                                new MySqlParameter("@userName", args.Replace("removeuser ", string.Empty))
+                                new MySqlParameter("@name", args.Replace("removeuser ", string.Empty))
                             }, 
                             connection);
 
