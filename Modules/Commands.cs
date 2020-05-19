@@ -262,7 +262,7 @@ namespace csharpi.Modules
             var embed = new EmbedBuilder();
             var user = Context.User;
 
-            args = args == "help" ? "help " : args == "?" ? "? " : args == "users " ? "users" : args;
+            args = args == "help" ? "help " : args == "?" ? "? " : args == "users " ? "users" : args == "schedule" ? "schedule " : args;
 
             switch (args.Substring(0, args.IndexOf(' ')).ToLower())
             {
