@@ -359,7 +359,7 @@ namespace csharpi.Modules
                         command = new MySqlStoredProcedure("usp_Set_Schedule",
                             new MySqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'a'),
+                                new MySqlParameter("@action", 'i'),
                                 new MySqlParameter("@user", databaseUser.UserID),
                                 new MySqlParameter("@day", weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).DayID),
                                 new MySqlParameter("@seg", segments.Find(x => x.Name == parameters[1]).SegmentID)
