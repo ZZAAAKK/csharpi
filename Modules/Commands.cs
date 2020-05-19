@@ -244,11 +244,11 @@ namespace csharpi.Modules
             }
 
             embed.WithColor(new Color(0, 255,0));
-            embed.Title = "Your schedule:";
+            embed.Title = $"<@!{user.Id}>'s schedule:";
 
             foreach (Schedule schedule in schedules)
             {
-                sb.AppendLine($"{schedule.Weekday} @ {schedule.Segment} ({schedule.StartTime} - {schedule.EndTime})");
+                sb.AppendLine($"{schedule.Weekday} -> {schedule.Segment} ({schedule.StartTime} - {schedule.EndTime})");
             }
 
             embed.Description = sb.ToString();
