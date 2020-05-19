@@ -11,16 +11,17 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using csharpi;
 using csharpi.Extensions;
-using csharpi.Database;
+using csharpi.Dimensions;
 using csharpi.Common;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 
 namespace csharpi.Modules
 {
-    // for commands to be available, and have the Context passed to them, we must inherit ModuleBase
     public class Commands : ModuleBase
     {
+        public static string ConnectionString { get => Configuration.GetConnectionString(); }
+
         [Command("commands")]
         public async Task CommandsCommand()
         {
@@ -34,7 +35,8 @@ namespace csharpi.Modules
             {
                 "commands",
                 "hello",
-                "ask"
+                "ask",
+                "scheduling"
             };
 
             sb.AppendLine($"Here is a list of all commands available through Swift Bot: ");
@@ -140,10 +142,10 @@ namespace csharpi.Modules
         [Command("weekdays")]
         public async Task GetWeekdays()
         {
-            MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+            MySqlConnection connection = new MySqlConnection(ConnectionString);
             connection.Open();
 
-            List<string[]> rowStrings = new List<string[]>();
+            List<Weekday> weekdays = new List<Weekday>();
 
             using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", connection)))
             {
@@ -152,7 +154,7 @@ namespace csharpi.Modules
 
                 foreach (DataRow r in data.Tables[0].Rows)
                 {
-                    rowStrings.Add(r.RowStrings());
+                    weekdays.Add(new Weekday(r.RowStrings()));
                 }
             }
 
@@ -162,18 +164,48 @@ namespace csharpi.Modules
             var embed = new EmbedBuilder();
 
             embed.WithColor(new Color(0, 255,0));
-            embed.Title = "Weekdays, yo!";
+            embed.Title = "Weekdays:";
+            sb.AppendLine($"Day   ShortName   LongName");
 
-            foreach (string[] array in rowStrings)
+            foreach (Weekday w in weekdays)
             {
-                string a = "";
+                sb.AppendLine($"{w.DayID}   {w.ShortName}   {w.LongName}");
+            }
 
-                foreach (string s in array)
+            embed.Description = sb.ToString();
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+        [Command("segments")]
+        public async Task GetSegments()
+        {
+            MySqlConnection connection = new MySqlConnection(ConnectionString);
+            connection.Open();
+
+            List<Segment> segments = new List<Segment>();
+
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Segments", connection)))
+            {
+                DataSet data = new DataSet();
+                adapter.Fill(data);
+
+                foreach (DataRow r in data.Tables[0].Rows)
                 {
-                    a = a == "" ? s : a + $";{s}";
+                    segments.Add(new Segment(r.RowStrings()));
                 }
+            }
 
-                sb.AppendLine(a);
+            connection.Close();
+            
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+
+            embed.WithColor(new Color(0, 255,0));
+            embed.Title = "Segments:";
+
+            foreach (Segment segment in segments)
+            {
+                sb.AppendLine($"{segment.Name}");
             }
 
             embed.Description = sb.ToString();
@@ -192,7 +224,7 @@ namespace csharpi.Modules
                 case "users":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
                         connection.Open();
 
                         MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
@@ -231,7 +263,7 @@ namespace csharpi.Modules
                 case "adduser":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
                         connection.Open();
 
                         MySqlCommand command = new MySqlStoredProcedure("usp_Set_User", 
@@ -254,7 +286,7 @@ namespace csharpi.Modules
                 case "removeuser":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
                         connection.Open();
 
                         MySqlCommand command = new MySqlStoredProcedure("usp_Delete_User", 
@@ -271,6 +303,77 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         sb.AppendLine($"Failed to remove user *{args.Replace("removeuser ", string.Empty)}* with error {e.Message}");
+                    }
+                    break;
+                case "addtime":
+                    try 
+                    {
+                        DatabaseUser databaseUser;
+                        List<Weekday> weekdays = new List<Weekday>();
+                        List<Segment> segments = new List<Segment>();
+
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 's'),
+                                new MySqlParameter("@name", $"<@!{user.Id}>")
+                            }, 
+                            connection);
+
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        databaseUser = new DatabaseUser(data.Tables[0].Rows[0].RowStrings());
+
+                        command = new MySqlStoredProcedure("usp_Get_Segment", connection);
+
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            segments.Add(new Segment(r.RowStrings()));
+                        }
+
+                        command = new MySqlStoredProcedure("usp_Get_Weekdays", connection);
+
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            weekdays.Add(new Weekday(r.RowStrings()));
+                        }
+
+                        string[] parameters = args.Replace("addtime ", string.Empty).Replace(" ", string.Empty).Split(';');
+
+                        command = new MySqlStoredProcedure("usp_Set_Schedule",
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'a'),
+                                new MySqlParameter("@user", databaseUser.UserID),
+                                new MySqlParameter("@day", weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).DayID),
+                                new MySqlParameter("@seg", segments.Find(x => x.Name == parameters[1]).SegmentID)
+                            },
+                            connection);
+
+                        sb.AppendLine($"Successfully created the following scheduled segment:");
+                        sb.AppendLine($"User: {databaseUser.UserName}");
+                        sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).LongName}");
+                        sb.AppendLine($"Segment: {segments.Find(x => x.Name == parameters[1]).Name}");
+                    }
+                    catch (Exception e)
+                    {
+                        sb.AppendLine($"Failed to create scheduled segment with error {e.Message}");
                     }
                     break;
                 case "?":

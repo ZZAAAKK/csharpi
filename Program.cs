@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using csharpi.Services;
-using csharpi.Database;
 
 namespace csharpi
 {
@@ -29,8 +28,6 @@ namespace csharpi
                 .AddJsonFile(path: "config.json");  
          
             _config = _builder.Build();
-
-            DatabaseActivity.EnsureExists();
         }
 
         public async Task MainAsync()
