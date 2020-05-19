@@ -66,4 +66,28 @@ namespace csharpi.Dimensions
             EndTime = properties[4];
         }
     }
+
+    public class HeatmapRow
+    {
+        public string Segment { get; private set; }
+        public int Monday { get; private set; }
+        public int Tuesday { get; private set; }
+        public int Wednesday { get; private set; }
+        public int Thursday { get; private set; }
+        public int Friday { get; private set; }
+        public int Saturday { get; private set; }
+        public int Sunday { get; private set; }
+
+        public HeatmapRow(string[] properties)
+        {
+            Segment = properties[0];
+            Monday = int.Parse(properties[1]);
+            Tuesday = int.Parse(properties[2]);
+            Wednesday = int.Parse(properties[3]);
+            Thursday = int.Parse(properties[4]);
+            Friday = int.Parse(properties[5]);
+            Saturday = int.Parse(properties[6]);
+            Sunday = int.Parse(properties[7]);
+        }
+    }
 }

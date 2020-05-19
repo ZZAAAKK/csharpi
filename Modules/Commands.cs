@@ -49,7 +49,7 @@ namespace csharpi.Modules
             }
 
             sb.AppendLine();
-            sb.AppendLine($"Just remember to use \'$\' at the beginning of each command.");
+            sb.AppendLine($"Just remember to use '$' at the beginning of each command.");
             sb.AppendLine();
             sb.AppendLine($"Happy commanding...!");
 
@@ -262,7 +262,9 @@ namespace csharpi.Modules
             var embed = new EmbedBuilder();
             var user = Context.User;
 
-            switch (args == "help" ? "help" : args == "?" ? "?" : args == "users" ? "users" : args.Substring(0, args.IndexOf(' ')).ToLower())
+            args = args == "help" ? "help " : args == "?" ? "? " : args == "users " ? "users" : args;
+
+            switch (args.Substring(0, args.IndexOf(' ')).ToLower())
             {
                 case "users":
                     try 
@@ -494,10 +496,129 @@ namespace csharpi.Modules
                         sb.AppendLine($"Failed to remove scheduled segment with error {e.Message}");
                     }
                     break;
+                case "schedule":
+                    try 
+                    {
+                        List<HeatmapRow> heatmapRows = new List<HeatmapRow>();
+
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Schedule", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'h'),
+                                new MySqlParameter("@name", string.Empty)
+                            }, 
+                            connection);
+
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            heatmapRows.Add(new HeatmapRow(r.RowStrings()));
+                        }
+
+                        sb.AppendLine("```");
+                        sb.AppendLine("╔═══════════╦════════════╦════════════╦════════════╦════════════╦════════════╦════════════╦════════════╗");
+                        sb.AppendLine("║           ║   Monday   ║   Tuesday  ║ Wednesday  ║  Thursday  ║   Friday   ║  Saturday  ║   Sunday   ║");
+                        sb.AppendLine("╠═══════════╬════════════╬════════════╬════════════╬════════════╣════════════╣════════════╣════════════╣");
+                        if (heatmapRows.Find(x => x.Segment == "Morning") == null)
+                        {
+                            sb.AppendLine("║ Morning   ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║");
+                        }
+                        else 
+                        {
+                            HeatmapRow r = heatmapRows.Find(x => x.Segment == "Morning");
+                            string[] days = 
+                            {
+                                r.Monday < 10 ? $" {r.Monday}" : $"{r.Monday}",
+                                r.Tuesday < 10 ? $" {r.Tuesday}" : $"{r.Tuesday}",
+                                r.Wednesday < 10 ? $" {r.Wednesday}" : $"{r.Wednesday}",
+                                r.Thursday < 10 ? $" {r.Thursday}" : $"{r.Thursday}",
+                                r.Friday < 10 ? $" {r.Friday}" : $"{r.Friday}",
+                                r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
+                                r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
+                            };
+                            sb.AppendLine($"║ Morning   ║     {days[0]}     ║     {days[1]}     ║     {days[2]}     ║     {days[3]}     ║     {days[4]}     ║     {days[5]}     ║     {days[6]}     ║");
+                        }
+                        sb.AppendLine("╠═══════════╬════════════╬════════════╬════════════╬════════════╣════════════╣════════════╣════════════╣");
+                        if (heatmapRows.Find(x => x.Segment == "Afternoon") == null)
+                        {
+                            sb.AppendLine("║ Afternoon ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║");
+                        }
+                        else 
+                        {
+                            HeatmapRow r = heatmapRows.Find(x => x.Segment == "Afternoon");
+                            string[] days = 
+                            {
+                                r.Monday < 10 ? $" {r.Monday}" : $"{r.Monday}",
+                                r.Tuesday < 10 ? $" {r.Tuesday}" : $"{r.Tuesday}",
+                                r.Wednesday < 10 ? $" {r.Wednesday}" : $"{r.Wednesday}",
+                                r.Thursday < 10 ? $" {r.Thursday}" : $"{r.Thursday}",
+                                r.Friday < 10 ? $" {r.Friday}" : $"{r.Friday}",
+                                r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
+                                r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
+                            };
+                            sb.AppendLine($"║ Afternoon ║     {days[0]}     ║     {days[1]}     ║     {days[2]}     ║     {days[3]}     ║     {days[4]}     ║     {days[5]}     ║     {days[6]}     ║");
+                        }
+                        sb.AppendLine("╠═══════════╬════════════╬════════════╬════════════╬════════════╣════════════╣════════════╣════════════╣");
+                        if (heatmapRows.Find(x => x.Segment == "Evening") == null)
+                        {
+                            sb.AppendLine("║ Evening   ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║");
+                        }
+                        else 
+                        {
+                            HeatmapRow r = heatmapRows.Find(x => x.Segment == "Evening");
+                            string[] days = 
+                            {
+                                r.Monday < 10 ? $" {r.Monday}" : $"{r.Monday}",
+                                r.Tuesday < 10 ? $" {r.Tuesday}" : $"{r.Tuesday}",
+                                r.Wednesday < 10 ? $" {r.Wednesday}" : $"{r.Wednesday}",
+                                r.Thursday < 10 ? $" {r.Thursday}" : $"{r.Thursday}",
+                                r.Friday < 10 ? $" {r.Friday}" : $"{r.Friday}",
+                                r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
+                                r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
+                            };
+                            sb.AppendLine($"║ Evening   ║     {days[0]}     ║     {days[1]}     ║     {days[2]}     ║     {days[3]}     ║     {days[4]}     ║     {days[5]}     ║     {days[6]}     ║");
+                        }
+                        sb.AppendLine("╠═══════════╬════════════╬════════════╬════════════╬════════════╣════════════╣════════════╣════════════╣");
+                        if (heatmapRows.Find(x => x.Segment == "Night") == null)
+                        {
+                            sb.AppendLine("║ Night     ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║      0     ║");
+                        }
+                        else 
+                        {
+                            HeatmapRow r = heatmapRows.Find(x => x.Segment == "Night");
+                            string[] days = 
+                            {
+                                r.Monday < 10 ? $" {r.Monday}" : $"{r.Monday}",
+                                r.Tuesday < 10 ? $" {r.Tuesday}" : $"{r.Tuesday}",
+                                r.Wednesday < 10 ? $" {r.Wednesday}" : $"{r.Wednesday}",
+                                r.Thursday < 10 ? $" {r.Thursday}" : $"{r.Thursday}",
+                                r.Friday < 10 ? $" {r.Friday}" : $"{r.Friday}",
+                                r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
+                                r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
+                            };
+                            sb.AppendLine($"║ Night     ║     {days[0]}     ║     {days[1]}     ║     {days[2]}     ║     {days[3]}     ║     {days[4]}     ║     {days[5]}     ║     {days[6]}     ║");
+                        }
+                        sb.AppendLine("╚═══════════╩════════════╩════════════╩════════════╩════════════╩════════════╩════════════╩════════════╝");
+                        sb.AppendLine("```");
+                        await ReplyAsync(sb.ToString());
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        sb.AppendLine($"Failed to generate heatmap with error {e.Message}");
+                    }
+                    break;
                 case "?":
                 case "help":
                     embed.WithColor(new Color(0, 0, 0));
-                    embed.Title = "Scheduling help";
+                    embed.Title = "Scheduling Help";
 
                     sb.AppendLine("You can use the following commands in the scheduler:");
                     sb.AppendLine();
