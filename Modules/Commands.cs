@@ -184,7 +184,7 @@ namespace csharpi.Modules
 
             List<Segment> segments = new List<Segment>();
 
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Segments", connection)))
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Segment", connection)))
             {
                 DataSet data = new DataSet();
                 adapter.Fill(data);
