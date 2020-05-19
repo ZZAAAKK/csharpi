@@ -366,6 +366,8 @@ namespace csharpi.Modules
                             },
                             connection);
 
+                        command.ExecuteNonQuery();
+
                         sb.AppendLine($"Successfully created the following scheduled segment:");
                         sb.AppendLine($"User: {databaseUser.UserName}");
                         sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).LongName}");
