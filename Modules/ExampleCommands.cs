@@ -186,12 +186,47 @@ namespace csharpi.Modules
             var embed = new EmbedBuilder();
             var user = Context.User;
 
-            switch (args == "help" ? "help" : args == "?" ? "?" : args.Substring(0, args.IndexOf(' ')).ToLower())
+            switch (args == "help" ? "help" : args == "?" ? "?" : args == "users" ? "users" : args.Substring(0, args.IndexOf(' ')).ToLower())
             {
                 case "users":
-                    await ReplyAsync("Returns a list of current users, when it's working...");
-                    return;
-                    //break;
+                    try 
+                    {
+                        MySqlConnection connection = new MySqlConnection(Database.DatabaseActivity.ConnectionString);
+                        connection.Open();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'a'),
+                                new MySqlParameter("@name", string.Empty)
+                            }, 
+                            connection);
+
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        List<DatabaseUser> users = new List<DatabaseUser>();
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            users.Add(new DatabaseUser(r.RowStrings()));
+                        }
+                            
+                        sb.AppendLine($"The following users exist in the scheduling server:");
+
+                        foreach (DatabaseUser u in users)
+                        {
+                            sb.AppendLine($"{u.UserName}");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        sb.AppendLine($"Failed to execute stored procedure with error {e.Message}");
+                    }
+                    break;
                 case "adduser":
                     try 
                     {
