@@ -378,6 +378,79 @@ namespace csharpi.Modules
                         sb.AppendLine($"Failed to create scheduled segment with error {e.Message}");
                     }
                     break;
+                case "removetime":
+                    try 
+                    {
+                        DatabaseUser databaseUser;
+                        List<Weekday> weekdays = new List<Weekday>();
+                        List<Segment> segments = new List<Segment>();
+
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 's'),
+                                new MySqlParameter("@name", $"<@!{user.Id}>")
+                            }, 
+                            connection);
+
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        databaseUser = new DatabaseUser(data.Tables[0].Rows[0].RowStrings());
+
+                        command = new MySqlStoredProcedure("usp_Get_Segment", connection);
+
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            segments.Add(new Segment(r.RowStrings()));
+                        }
+
+                        command = new MySqlStoredProcedure("usp_Get_Weekdays", connection);
+
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            weekdays.Add(new Weekday(r.RowStrings()));
+                        }
+
+                        string[] parameters = args.Replace("removetime ", string.Empty).Replace(" ", string.Empty).Split(';');
+
+                        command = new MySqlStoredProcedure("usp_Set_Schedule",
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'd'),
+                                new MySqlParameter("@user", databaseUser.UserID),
+                                new MySqlParameter("@day", weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).DayID),
+                                new MySqlParameter("@seg", segments.Find(x => x.Name == parameters[1]).SegmentID)
+                            },
+                            connection);
+
+                        command.ExecuteNonQuery();
+
+                        sb.AppendLine($"Successfully removed the following scheduled segment:");
+                        sb.AppendLine($"User: {databaseUser.UserName}");
+                        sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).LongName}");
+                        sb.AppendLine($"Segment: {segments.Find(x => x.Name == parameters[1]).Name}");
+                    }
+                    catch (Exception e)
+                    {
+                        sb.AppendLine($"Failed to remove scheduled segment with error {e.Message}");
+                    }
+                    break;
                 case "?":
                 case "help":
                     embed.WithColor(new Color(0, 0, 0));
@@ -388,7 +461,7 @@ namespace csharpi.Modules
                     sb.AppendLine("adduser [@User Name]");
                     sb.AppendLine("removeuser [@User Name]");
                     sb.AppendLine("addtime [day]; [period]");
-                    sb.AppendLine("removetime [day]");
+                    sb.AppendLine("removetime [day]; [period]");
                     sb.AppendLine("users");
                     sb.AppendLine("schedule");
                     sb.AppendLine("help");
