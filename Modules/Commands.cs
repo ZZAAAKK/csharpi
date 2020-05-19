@@ -36,7 +36,8 @@ namespace csharpi.Modules
                 "commands",
                 "hello",
                 "ask",
-                "scheduling"
+                "scheduling",
+                "myschedule"
             };
 
             sb.AppendLine($"Here is a list of all commands available through Swift Bot: ");
@@ -206,6 +207,48 @@ namespace csharpi.Modules
             foreach (Segment segment in segments)
             {
                 sb.AppendLine($"{segment.Name}");
+            }
+
+            embed.Description = sb.ToString();
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+        [Command("myschedule")]
+        public async Task MyScheduleCommand()
+        {
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+            var user = Context.User;
+
+            List<Schedule> schedules = new List<Schedule>();
+
+            MySqlConnection connection = new MySqlConnection(ConnectionString);
+            connection.Open();
+
+            MySqlCommand command = new MySqlStoredProcedure("usp_Get_Schedule", 
+                new MySqlParameter[] 
+                {
+                    new MySqlParameter("@action", 's'),
+                    new MySqlParameter("@name", $"<@!{user.Id}>")
+                }, 
+                connection);
+
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            command.ExecuteNonQuery();
+            DataSet data = new DataSet();
+            adapter.Fill(data);
+
+            foreach (DataRow r in data.Tables[0].Rows)
+            {
+                schedules.Add(new Schedule(r.RowStrings()));
+            }
+
+            embed.WithColor(new Color(0, 255,0));
+            embed.Title = "Your schedule:";
+
+            foreach (Schedule schedule in schedules)
+            {
+                sb.AppendLine($"{schedule.Weekday} @ {schedule.Segment} ({schedule.StartTime} - {schedule.EndTime})");
             }
 
             embed.Description = sb.ToString();
@@ -473,7 +516,7 @@ namespace csharpi.Modules
                     sb.AppendLine("3) You do not need to specify a user when scheduling times as it refers to your own times only.");
                     break;
                 default:
-                    sb.AppendLine($"Sorry @{user.Username}, I didn't understand that.");
+                    sb.AppendLine($"Sorry <@!{user.Id}>, I didn't understand that.");
                     sb.AppendLine();
                     sb.AppendLine("Please type '$scheduling help' or '$scheduling ?' for a list of commands.");
                     sb.AppendLine();

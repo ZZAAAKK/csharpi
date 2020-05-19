@@ -48,4 +48,22 @@ namespace csharpi.Dimensions
             Name = properties[1];
         }
     }
+
+    public class Schedule
+    {
+        public string UserName { get; private set; }
+        public string Weekday { get; private set; }
+        public string Segment { get; private set; }
+        public string StartTime { get; private set; }
+        public string EndTime { get; private set; }
+
+        public Schedule (string[] properties) 
+        {
+            UserName = properties[0];
+            Weekday = properties[1];
+            Segment = properties[2];
+            StartTime = properties[3];
+            EndTime = properties[4];
+        }
+    }
 }
