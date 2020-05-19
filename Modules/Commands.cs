@@ -354,15 +354,15 @@ namespace csharpi.Modules
                             weekdays.Add(new Weekday(r.RowStrings()));
                         }
 
-                        string[] parameters = args.Replace("addtime ", string.Empty).Replace(" ", string.Empty).Split(';');
+                        string[] parameters = args.Replace("addtime ", string.Empty).ToUpper().Replace(" ", string.Empty).Split(';');
 
                         command = new MySqlStoredProcedure("usp_Set_Schedule",
                             new MySqlParameter[] 
                             {
                                 new MySqlParameter("@action", 'i'),
                                 new MySqlParameter("@user", databaseUser.UserID),
-                                new MySqlParameter("@day", weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).DayID),
-                                new MySqlParameter("@seg", segments.Find(x => x.Name == parameters[1]).SegmentID)
+                                new MySqlParameter("@day", weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).DayID),
+                                new MySqlParameter("@seg", segments.Find(x => x.Name.ToUpper() == parameters[1]).SegmentID)
                             },
                             connection);
 
@@ -370,8 +370,8 @@ namespace csharpi.Modules
 
                         sb.AppendLine($"Successfully created the following scheduled segment:");
                         sb.AppendLine($"User: {databaseUser.UserName}");
-                        sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).LongName}");
-                        sb.AppendLine($"Segment: {segments.Find(x => x.Name == parameters[1]).Name}");
+                        sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).LongName}");
+                        sb.AppendLine($"Segment: {segments.Find(x => x.Name.ToUpper() == parameters[1]).Name}");
                     }
                     catch (Exception e)
                     {
@@ -427,15 +427,15 @@ namespace csharpi.Modules
                             weekdays.Add(new Weekday(r.RowStrings()));
                         }
 
-                        string[] parameters = args.Replace("removetime ", string.Empty).Replace(" ", string.Empty).Split(';');
+                        string[] parameters = args.Replace("removetime ", string.Empty).ToUpper().Replace(" ", string.Empty).Split(';');
 
                         command = new MySqlStoredProcedure("usp_Set_Schedule",
                             new MySqlParameter[] 
                             {
                                 new MySqlParameter("@action", 'd'),
                                 new MySqlParameter("@user", databaseUser.UserID),
-                                new MySqlParameter("@day", weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).DayID),
-                                new MySqlParameter("@seg", segments.Find(x => x.Name == parameters[1]).SegmentID)
+                                new MySqlParameter("@day", weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).DayID),
+                                new MySqlParameter("@seg", segments.Find(x => x.Name.ToUpper() == parameters[1]).SegmentID)
                             },
                             connection);
 
@@ -443,8 +443,8 @@ namespace csharpi.Modules
 
                         sb.AppendLine($"Successfully removed the following scheduled segment:");
                         sb.AppendLine($"User: {databaseUser.UserName}");
-                        sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName == parameters[0] || x.ShortName == parameters[0]).LongName}");
-                        sb.AppendLine($"Segment: {segments.Find(x => x.Name == parameters[1]).Name}");
+                        sb.AppendLine($"Weekday: {weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).LongName}");
+                        sb.AppendLine($"Segment: {segments.Find(x => x.Name.ToUpper() == parameters[1]).Name}");
                     }
                     catch (Exception e)
                     {
