@@ -15,7 +15,7 @@ namespace csharpi
     class Program
     {
         private readonly IConfiguration _config;
-        private DiscordSocketClient _client;
+        public static DiscordSocketClient _client { get; private set; }
 
         static void Main(string[] args)
         {
@@ -71,6 +71,11 @@ namespace csharpi
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()
                 .BuildServiceProvider();
+        }
+
+        public DiscordSocketClient GetClient() 
+        {
+            return _client;
         }
     }
 }

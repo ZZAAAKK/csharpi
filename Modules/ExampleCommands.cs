@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using csharpi;
 using csharpi.Extensions;
 using csharpi.Database;
 using csharpi.Common;
@@ -236,7 +237,8 @@ namespace csharpi.Modules
                         MySqlCommand command = new MySqlStoredProcedure("usp_Set_User", 
                             new MySqlParameter[] 
                             {
-                                new MySqlParameter("@name", args.Replace("adduser ", string.Empty))
+                                new MySqlParameter("@id", args.Replace("adduser ", string.Empty)),
+                                new MySqlParameter("@name", Program._client.GetUser(ulong.Parse(args.Replace("adduser ", string.Empty).Replace("<@!", string.Empty).Replace(">", string.Empty))).Username)
                             }, 
                             connection);
 
