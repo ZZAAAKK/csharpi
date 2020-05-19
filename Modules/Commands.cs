@@ -244,7 +244,7 @@ namespace csharpi.Modules
             }
 
             embed.WithColor(new Color(0, 255,0));
-            embed.Title = $"<@!{user.Id}>'s schedule:";
+            embed.Title = $"{user.Username}'s Schedule";
 
             foreach (Schedule schedule in schedules)
             {
