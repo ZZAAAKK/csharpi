@@ -543,7 +543,7 @@ namespace csharpi.Modules
                                 r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
                                 r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
                             };
-                            sb.AppendLine($"║ Morn ║   {days[0]}  ║   {days[1]}  ║   {days[2]}  ║   {days[3]}  ║   {days[4]}  ║   {days[5]}  ║   {days[6]}  ║");
+                            sb.AppendLine($"║ Morn ║  {days[0]}   ║  {days[1]}   ║  {days[2]}   ║  {days[3]}   ║  {days[4]}   ║  {days[5]}   ║  {days[6]}   ║");
                         }
                         sb.AppendLine("╠══════╬═══════╬═══════╬═══════╬═══════╣═══════╣═══════╣═══════╣");
                         if (heatmapRows.Find(x => x.Segment == "Afternoon") == null)
@@ -563,7 +563,7 @@ namespace csharpi.Modules
                                 r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
                                 r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
                             };
-                            sb.AppendLine($"║ Noon ║   {days[0]}  ║   {days[1]}  ║   {days[2]}  ║   {days[3]}  ║   {days[4]}  ║   {days[5]}  ║   {days[6]}  ║");
+                            sb.AppendLine($"║ Noon ║  {days[0]}   ║  {days[1]}   ║  {days[2]}   ║  {days[3]}   ║  {days[4]}   ║  {days[5]}   ║  {days[6]}   ║");
                         }
                         sb.AppendLine("╠══════╬═══════╬═══════╬═══════╬═══════╣═══════╣═══════╣═══════╣");
                         if (heatmapRows.Find(x => x.Segment == "Evening") == null)
@@ -583,7 +583,7 @@ namespace csharpi.Modules
                                 r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
                                 r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
                             };
-                            sb.AppendLine($"║ Eve  ║   {days[0]}  ║   {days[1]}  ║   {days[2]}  ║   {days[3]}  ║   {days[4]}  ║   {days[5]}  ║   {days[6]}  ║");
+                            sb.AppendLine($"║ Eve  ║  {days[0]}   ║  {days[1]}   ║  {days[2]}   ║  {days[3]}   ║  {days[4]}   ║  {days[5]}   ║  {days[6]}   ║");
                         }
                         sb.AppendLine("╠══════╬═══════╬═══════╬═══════╬═══════╣═══════╣═══════╣═══════╣");
                         if (heatmapRows.Find(x => x.Segment == "Night") == null)
@@ -603,7 +603,7 @@ namespace csharpi.Modules
                                 r.Saturday < 10 ? $" {r.Saturday}" : $"{r.Saturday}",
                                 r.Sunday < 10 ? $" {r.Sunday}" : $"{r.Sunday}"
                             };
-                            sb.AppendLine($"║ Noct ║   {days[0]}  ║   {days[1]}  ║   {days[2]}  ║   {days[3]}  ║   {days[4]}  ║   {days[5]}  ║   {days[6]}  ║");
+                            sb.AppendLine($"║ Noct ║  {days[0]}   ║  {days[1]}   ║  {days[2]}   ║  {days[3]}   ║  {days[4]}   ║  {days[5]}   ║  {days[6]}   ║");
                         }
                         sb.AppendLine("╚══════╩═══════╩═══════╩═══════╩═══════╩═══════╩═══════╩═══════╝");
                         sb.AppendLine("```");
