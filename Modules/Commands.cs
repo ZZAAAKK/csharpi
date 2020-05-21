@@ -679,6 +679,7 @@ namespace csharpi.Modules
                             types.Add(new ContentType(r.RowStrings()));
                         }
 
+                        sb.AppendLine("```");
                         sb.AppendLine("╔════╦═════════════════╗");
                         sb.AppendLine("║ ID ║      Value      ║");
 
@@ -689,6 +690,7 @@ namespace csharpi.Modules
                         }
 
                         sb.AppendLine("╚════╩═════════════════╝");
+                        sb.AppendLine("```");
                     }
                     catch (Exception e)
                     {
@@ -716,6 +718,7 @@ namespace csharpi.Modules
                             versions.Add(new ContentVersion(r.RowStrings()));
                         }
 
+                        sb.AppendLine("```");
                         sb.AppendLine("╔════╦═════════════════╗");
                         sb.AppendLine("║ ID ║      Value      ║");
 
@@ -726,6 +729,7 @@ namespace csharpi.Modules
                         }
 
                         sb.AppendLine("╚════╩═════════════════╝");
+                        sb.AppendLine("```");
                     }
                     catch (Exception e)
                     {
