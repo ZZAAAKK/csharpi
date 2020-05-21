@@ -772,26 +772,9 @@ namespace csharpi.Modules
                         }
 
                         string[] parameters = args.ToLower().Replace("filter ", string.Empty).Trim().Replace(" ", string.Empty).Split(';');
-                        int typeID;
-                        int versionID;
 
-                        if (parameters[0].GetType() == typeof(int))
-                        {
-                            typeID = types.Find(x => x.ID == int.Parse(parameters[0])).ID;
-                        }
-                        else 
-                        {
-                            typeID = types.Find(x => x.Value.ToLower() == parameters[0]).ID;
-                        }
-
-                        if (parameters[1].GetType() == typeof(int))
-                        {
-                            versionID = versions.Find(x => x.ID == int.Parse(parameters[1])).ID;
-                        }
-                        else 
-                        {
-                            versionID = versions.Find(x => x.Value.ToLower() == parameters[1]).ID;
-                        }
+                        int typeID = types.Find(x => x.ID == int.Parse(parameters[0]) || x.Value.ToLower() == parameters[0]).ID;
+                        int versionID = versions.Find(x => x.ID == int.Parse(parameters[1]) || x.Value.ToLower() == parameters[1]).ID;
 
                         command = new MySqlStoredProcedure("usp_Get_Duty", 
                             new MySqlParameter[] 
