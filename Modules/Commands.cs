@@ -771,7 +771,7 @@ namespace csharpi.Modules
                             versions.Add(new ContentVersion(r.RowStrings()));
                         }
 
-                        string[] parameters = args.ToLower().Replace("filter ", string.Empty).Trim().Replace(" ", string.Empty).Split(';');
+                        string[] parameters = args.Replace("filter ", string.Empty).ToLower().Replace(" ", string.Empty).Split(';');
 
                         int typeID;
                         int versionID;
@@ -812,15 +812,15 @@ namespace csharpi.Modules
                         }
 
                         sb.AppendLine("```");
-                        sb.AppendLine("╔═════╦════════════════════════════════════════════════╗");
-                        sb.AppendLine("║ ID  ║                     Title                      ║");
+                        sb.AppendLine("╔══════╦════════════════════════════════════════════════╗");
+                        sb.AppendLine("║  ID  ║                     Title                      ║");
 
                         foreach (Duty d in duties)
                         {
                             sb.AppendLine($"║  {d.ID.ToString().PadLeft(3)} ║ {d.Title.PadRight(46)} ║");
                         }
 
-                        sb.AppendLine("╚═════╩════════════════════════════════════════════════╝");
+                        sb.AppendLine("╚══════╩════════════════════════════════════════════════╝");
                         sb.AppendLine("```");
                         await ReplyAsync(sb.ToString());
                         return;
