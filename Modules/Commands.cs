@@ -737,9 +737,98 @@ namespace csharpi.Modules
                         sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
                     }
                     break;
-                // case "filter":
-                //     //
-                //     break;
+                case "filter":
+                    try 
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ContentType> types = new List<ContentType>();
+                        List<ContentVersion> versions = new List<ContentVersion>();
+                        List<Duty> duties = new List<Duty>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Content_Type", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+                    
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            types.Add(new ContentType(r.RowStrings()));
+                        }
+
+                        command = new MySqlStoredProcedure("usp_Get_Content_Version", connection);
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        data = new DataSet();
+                        adapter.Fill(data);
+                    
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            versions.Add(new ContentVersion(r.RowStrings()));
+                        }
+
+                        string[] parameters = args.ToLower().Replace("filter ", string.Empty).Trim().Replace(" ", string.Empty).Split(';');
+                        int typeID;
+                        int versionID;
+
+                        if (parameters[0].GetType() == typeof(int))
+                        {
+                            typeID = types.Find(x => x.ID == int.Parse(parameters[0])).ID;
+                        }
+                        else 
+                        {
+                            typeID = types.Find(x => x.Value.ToLower() == parameters[0]).ID;
+                        }
+
+                        if (parameters[1].GetType() == typeof(int))
+                        {
+                            versionID = versions.Find(x => x.ID == int.Parse(parameters[1])).ID;
+                        }
+                        else 
+                        {
+                            versionID = versions.Find(x => x.Value.ToLower() == parameters[1]).ID;
+                        }
+
+                        command = new MySqlStoredProcedure("usp_Get_Duty", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@type", typeID),
+                                new MySqlParameter("@version", versionID)
+                            }, connection);
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        data = new DataSet();
+                        adapter.Fill(data);
+                    
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            duties.Add(new Duty(r.RowStrings()));
+                        }
+
+                        sb.AppendLine("```");
+                        sb.AppendLine("╔═════╦════════════════════════════════════════════════╗");
+                        sb.AppendLine("║ ID  ║                     Title                      ║");
+
+                        foreach (Duty d in duties)
+                        {
+                            sb.AppendLine("║═════║════════════════════════════════════════════════║");
+                            sb.AppendLine($"║  {d.ID.ToString().PadLeft(3)} ║ {d.Title.PadRight(46)} ║");
+                        }
+
+                        sb.AppendLine("╚═════╩════════════════════════════════════════════════╝");
+                        sb.AppendLine("```");
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                    }
+                    break;
                 // case "add":
                 //     //
                 //     break;
