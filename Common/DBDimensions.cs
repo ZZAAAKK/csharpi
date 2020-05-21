@@ -140,4 +140,24 @@ namespace csharpi.Dimensions
             CompleteDateTime = DateTime.Parse(properties[8]);
         }
     }
+
+    public class Duty
+    {
+        public int ID { get; private set; }
+        public string Title { get; private set; }
+        public int RequiredLevel { get; private set; }
+        public int AverageItemLevel { get; private set; }
+        public string Type { get; private set; }
+        public string Version { get; private set; }
+
+        public Duty(string [] properties)
+        {
+            ID = int.Parse(properties[0]);
+            Title = properties[1];
+            RequiredLevel = int.Parse(properties[2]);
+            AverageItemLevel = int.Parse(properties[3]);
+            Type = properties[4];
+            Version = properties[5];
+        }
+    }
 }
