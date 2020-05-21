@@ -34,10 +34,10 @@ namespace csharpi.Modules
             List<string> commandsList = new List<string>() 
             {
                 "commands",
-                "hello",
-                "ask",
-                "scheduling",
-                "myschedule"
+                "scheduling *",
+                "myschedule",
+                "content *",
+                "mycontent"
             };
 
             sb.AppendLine($"Here is a list of all commands available through Swift Bot: ");
@@ -51,6 +51,8 @@ namespace csharpi.Modules
             sb.AppendLine();
             sb.AppendLine($"Just remember to use '$' at the beginning of each command.");
             sb.AppendLine();
+            sb.AppendLine($"* _For more info on these just type the command followed by 'help'_");
+            sb.AppendLine();
             sb.AppendLine($"Happy commanding...!");
 
             embed.WithDescription(sb.ToString());
@@ -59,85 +61,14 @@ namespace csharpi.Modules
         }
 
         [Command("hello")]
+        //[RequireUserPermission(GuildPermission.KickMembers)]
         public async Task HelloCommand()
         {
             var sb = new StringBuilder();
-            var user = Context.User;
             
-            sb.AppendLine($"You are -> {user.Username}");
-            sb.AppendLine("I must now say, World!");
+            sb.AppendLine($"{Shrug}");
 
             await ReplyAsync(sb.ToString());
-        }
-
-        [Command("8ball")]
-        [Alias("ask")]
-        //[RequireUserPermission(GuildPermission.KickMembers)]
-        public async Task AskEightBall([Remainder]string args = null)
-        {
-            var sb = new StringBuilder();
-            var embed = new EmbedBuilder();
-
-            var user = Context.User;
-
-            var replies = new List<string>();
-
-            replies.Add("yes");
-            replies.Add("no");
-            replies.Add("maybe");
-            replies.Add("hazzzzy....");
-            replies.Add("You tell me!");
-
-            embed.WithColor(new Color(0, 255,0));
-            embed.Title = "Welcome to the 8-ball!";
-            
-            sb.AppendLine($"Thanks for the question {user.Username}!");
-            sb.AppendLine();
-
-            if (args == null)
-            {
-                sb.AppendLine("Sorry, can't answer a question you didn't ask!");
-            }
-            else 
-            {
-                var answer = replies[new Random().Next(replies.Count - 1)];
-                
-                sb.AppendLine($"You asked: {args}...");
-                sb.AppendLine();
-                sb.AppendLine($"...your answer is {answer.ToString()}");
-
-                switch (answer) 
-                {
-                    case "yes":
-                    {
-                        embed.WithColor(new Color(0, 255, 0));
-                        break;
-                    }
-                    case "no":
-                    {
-                        embed.WithColor(new Color(255, 0, 0));
-                        break;
-                    }
-                    case "maybe":
-                    {
-                        embed.WithColor(new Color(255,255,0));
-                        break;
-                    }
-                    case "hazzzzy....":
-                    {
-                        embed.WithColor(new Color(255,0,255));
-                        break;
-                    }
-                    case "You tell me!":
-                    {
-                        embed.WithColor(new Color(50,50,50));
-                        break;
-                    }
-                }
-            }
-
-            embed.Description = sb.ToString();
-            await ReplyAsync(null, false, embed.Build());
         }
 
         [Command("weekdays")]
@@ -262,7 +193,11 @@ namespace csharpi.Modules
             var embed = new EmbedBuilder();
             var user = Context.User;
 
-            args = args == "help" ? "help " : args == "?" ? "? " : args == "users " ? "users" : args == "schedule" ? "schedule " : args;
+            args = args.ToLower() == "help" ? "help " : 
+                args.ToLower() == "?" ? "? " : 
+                args.ToLower() == "users" ? "users " : 
+                args.ToLower() == "schedule" ? "schedule " : 
+                args;
 
             switch (args.Substring(0, args.IndexOf(' ')).ToLower())
             {
@@ -302,7 +237,7 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Failed to execute stored procedure with error {e.Message}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I didn't get the content you asked for, but I got you this error:\n{e.Message}\n{Shrug}");
                     }
                     break;
                 case "adduser":
@@ -325,7 +260,7 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Failed to create user *{args.Replace("adduser ", string.Empty)}* with error {e.Message}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to create user *{args.Replace("adduser ", string.Empty)}* with error\n{e.Message}\n{Shrug}");
                     }
                     break;
                 case "removeuser":
@@ -347,7 +282,8 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Failed to remove user *{args.Replace("removeuser ", string.Empty)}* with error {e.Message}");
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to remove user *{args.Replace("removeuser ", string.Empty)}* but I got you this error:\n{e.Message}\n{Shrug}");
                     }
                     break;
                 case "addtime":
@@ -420,7 +356,8 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Failed to create scheduled segment with error {e.Message}");
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to create that scheduled segment but I got you this error:\n{e.Message}\n{Shrug}");
                     }
                     break;
                 case "removetime":
@@ -493,7 +430,8 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Failed to remove scheduled segment with error {e.Message}");
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to remove scheduled segment but I got you this error:\n{e.Message}\n{Shrug}");
                     }
                     break;
                 case "schedule":
@@ -612,7 +550,8 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Failed to generate heatmap with error {e.Message}");
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to generate the heatmap but I got you this error:\n{e.Message}\n{Shrug}");
                     }
                     break;
                 case "?":
@@ -640,13 +579,214 @@ namespace csharpi.Modules
                     sb.AppendLine($"Sorry <@!{user.Id}>, I didn't understand that.");
                     sb.AppendLine();
                     sb.AppendLine("Please type '$scheduling help' or '$scheduling ?' for a list of commands.");
-                    sb.AppendLine();
-                    sb.AppendLine("*Please note: not all commands are currently available*");
                     break;
             }
             
             embed.Description = sb.ToString();
             await ReplyAsync(null, false, embed.Build());
         }
+
+        [Command("mycontent")]
+        public async Task GetMyContent()
+        {
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+            var user = Context.User;
+
+            embed.Title = "Your Content:";
+            embed.Color = new Color(0, 0, 0);
+
+            try
+            {
+                MySqlConnection connection = new MySqlConnection(ConnectionString);
+                connection.Open();
+
+                List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
+
+                MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                command.ExecuteNonQuery();
+
+                DataSet data = new DataSet();
+                adapter.Fill(data);
+
+                if (data.Tables[0].Rows.Count == 0)
+                {
+                    embed.Color = new Color(255, 0, 0);
+                    sb.AppendLine($"Sorry <@!{user.Id}>, looks like you don't have any content yet.");
+                    
+                }
+                else 
+                {
+                    foreach (DataRow r in data.Tables[0].Rows)
+                    {
+                        scheduledContents.Add(new ScheduledContent(r.RowStrings()));
+                    }
+
+                    scheduledContents.RemoveAll(x => x.UserName != $"<@!{user.Id}>");
+
+                    foreach (ScheduledContent s in scheduledContents)
+                    {
+                        string completeString = s.Complete ? $"Marked complete on {s.CompleteDateTime}" : "Not complete";
+                        sb.AppendLine($"{s.Title} -> {completeString}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                embed.Color = new Color(255, 0, 0);
+                sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+            }
+
+            embed.Description = sb.ToString();
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+        [Command("content")]
+        public async Task ContentCommand([Remainder]string args = null)
+        {
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+            var user = Context.User;
+
+            args = args.ToLower() == "help" ? "help " : 
+                args.ToLower() == "?" ? "? " : 
+                args.ToLower() == "type" ? "type " : 
+                args.ToLower() == "version" ? "version " : 
+                args.ToLower() == "random" ? "random " : 
+                args.ToLower() == "all" ? "all " : 
+                args;
+
+            switch (args.Substring(0, args.IndexOf(' ')).ToLower())
+            {
+                case "type":
+                    try 
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ContentType> types = new List<ContentType>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Content_Type", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+                    
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            types.Add(new ContentType(r.RowStrings()));
+                        }
+
+                        sb.AppendLine("╔════╦═════════════════╗");
+                        sb.AppendLine("║ ID ║      Value      ║");
+
+                        foreach (ContentType t in types)
+                        {
+                            sb.AppendLine("║════║═════════════════║");
+                            sb.AppendLine($"║  {t.ID} ║ {t.Value.PadRight(16)}║");
+                        }
+
+                        sb.AppendLine("╚════╩═════════════════╝");
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                    }
+                    break;
+                case "version":
+                    try 
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ContentVersion> versions = new List<ContentVersion>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Content_Version", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+                    
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            versions.Add(new ContentVersion(r.RowStrings()));
+                        }
+
+                        sb.AppendLine("╔════╦═════════════════╗");
+                        sb.AppendLine("║ ID ║      Value      ║");
+
+                        foreach (ContentVersion v in versions)
+                        {
+                            sb.AppendLine("║════║═════════════════║");
+                            sb.AppendLine($"║  {v.ID} ║ {v.Value.PadRight(16)}║");
+                        }
+
+                        sb.AppendLine("╚════╩═════════════════╝");
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                    }
+                    break;
+                // case "filter":
+                //     //
+                //     break;
+                // case "add":
+                //     //
+                //     break;
+                // case "remove":
+                //     //
+                //     break;
+                // case "markcomplete":
+                //     //
+                //     break;
+                // case "all":
+                //     //
+                //     break;
+                // case "random":
+                //     //
+                //     break;
+                case "?":
+                case "help":
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Scheduling Help";
+
+                    sb.AppendLine("You can use the following commands following $content:");
+                    sb.AppendLine();
+                    sb.AppendLine("type");
+                    sb.AppendLine("version");
+                    sb.AppendLine("filter [type];[version]");
+                    sb.AppendLine("filter [typeID];[versionID]");
+                    sb.AppendLine("add [DutyID]");
+                    sb.AppendLine("remove [ScheduledContentID]");
+                    sb.AppendLine("markcomplete [ScheduledContentID]");
+                    sb.AppendLine("random");
+                    sb.AppendLine("all");
+                    sb.AppendLine("help");
+                    sb.AppendLine("?");
+                    sb.AppendLine();
+                    sb.AppendLine("Please note the following:");
+                    sb.AppendLine("1) For ease of use you can either type out the full type/version of content you want, or just use the IDs provided.");
+                    sb.AppendLine("2) When marking content as complete, or removing it, be sure to use '$scheduling all' to get the ID before attempting it.");
+                    sb.AppendLine("3) You do not need to specify a user when adding content - it's always against your name.");
+                    break;
+                default:
+                    sb.AppendLine($"Sorry <@!{user.Id}>, I didn't understand that.");
+                    sb.AppendLine();
+                    sb.AppendLine("Please type '$content help' or '$content ?' for a list of commands.");
+                    break;
+            }
+
+            embed.Description = sb.ToString();
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+        public static string Shrug { get => "¯\\_(⊙_ʖ⊙)_/¯"; }
     }
+
 }

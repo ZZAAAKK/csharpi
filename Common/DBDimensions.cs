@@ -90,4 +90,54 @@ namespace csharpi.Dimensions
             Sunday = int.Parse(properties[7]);
         }
     }
+
+    public class ContentType
+    {
+        public int ID { get; private set; }
+        public string Value { get; private set; }
+
+        public ContentType(string [] properties)
+        {
+            ID = int.Parse(properties[0]);
+            Value = properties[1];
+        }
+    }
+
+    public class ContentVersion
+    {
+        public int ID { get; private set; }
+        public string Value { get; private set; }
+
+        public ContentVersion(string [] properties)
+        {
+            ID = int.Parse(properties[0]);
+            Value = properties[1];
+        }
+    }
+
+    public class ScheduledContent
+    {
+        public int ID { get; private set; }
+        public string Title { get; private set; }
+        public string UserName { get; private set; }
+        public int RequiredLevel { get; private set; }
+        public int AverageItemLevel { get; private set; }
+        public string Type { get; private set; }
+        public string Version { get; private set; }
+        public bool Complete { get; private set; }
+        public DateTime CompleteDateTime { get; private set; }
+
+        public ScheduledContent(string[] properties) 
+        {
+            ID = int.Parse(properties[0]);
+            Title = properties[1];
+            UserName = properties[2];
+            RequiredLevel = int.Parse(properties[3]);
+            AverageItemLevel = int.Parse(properties[4]);
+            Type = properties[5];
+            Version = properties[6];
+            Complete = Convert.ToBoolean(properties[7]);
+            CompleteDateTime = DateTime.Parse(properties[8]);
+        }
+    }
 }
