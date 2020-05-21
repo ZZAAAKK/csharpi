@@ -791,7 +791,7 @@ namespace csharpi.Modules
                         }
                         catch(Exception e)
                         {
-                            versionID = types.Find(x => x.Value.ToLower() == parameters[1]).ID;
+                            versionID = versions.Find(x => x.Value.ToLower() == parameters[1]).ID;
                         }
 
                         command = new MySqlStoredProcedure("usp_Get_Duty", 
