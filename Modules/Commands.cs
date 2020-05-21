@@ -822,6 +822,8 @@ namespace csharpi.Modules
 
                         sb.AppendLine("╚═════╩════════════════════════════════════════════════╝");
                         sb.AppendLine("```");
+                        await ReplyAsync(sb.ToString());
+                        return;
                     }
                     catch (Exception e)
                     {
