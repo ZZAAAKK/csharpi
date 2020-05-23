@@ -842,7 +842,9 @@ namespace csharpi.Modules
                         MySqlCommand command = new MySqlStoredProcedure("usp_Get_Duty", 
                             new MySqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'a')
+                                new MySqlParameter("@action", 'a'),
+                                new MySqlParameter("@type", 0),
+                                new MySqlParameter("@version", 0)
                             }, connection);
                         MySqlDataAdapter adapter = new MySqlDataAdapter(command);
                         command.ExecuteNonQuery();
