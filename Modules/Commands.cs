@@ -956,7 +956,7 @@ namespace csharpi.Modules
                             scheduledContents.Add(new ScheduledContent(r.RowStrings()));
                         }
 
-                        ScheduledContent content = scheduledContents.Find(x => x.ID == int.Parse(args.Replace("remove ", string.Empty)));
+                        ScheduledContent content = scheduledContents.Find(x => x.ID == int.Parse(args.Replace("markcomplete ", string.Empty)));
 
                         command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
                             new MySqlParameter[] 
