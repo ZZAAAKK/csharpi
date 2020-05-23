@@ -60,18 +60,14 @@ namespace csharpi.Modules
             await ReplyAsync(null, false, embed.Build());
         }
 
-        [Command("hello")]
-        //[RequireUserPermission(GuildPermission.KickMembers)]
-        public async Task HelloCommand()
+        [Command("fuckyou")]
+        public async Task FuckYouCommand()
         {
-            var sb = new StringBuilder();
-            
-            sb.AppendLine($"{Shrug}");
-
-            await ReplyAsync(sb.ToString());
+            await ReplyAsync($"No, fuck _you_ <@!{Context.User.Id}>!");
         }
 
         [Command("weekdays")]
+        //[RequireUserPermission(GuildPermission.KickMembers)]
         public async Task GetWeekdays()
         {
             MySqlConnection connection = new MySqlConnection(ConnectionString);
@@ -237,7 +233,7 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I didn't get the content you asked for, but I got you this error:\n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I didn't get the content you asked for, but I got you this error:\n{e.Message}");
                     }
                     break;
                 case "adduser":
@@ -260,7 +256,7 @@ namespace csharpi.Modules
                     }
                     catch (Exception e)
                     {
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to create user *{args.Replace("adduser ", string.Empty)}* with error\n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to create user *{args.Replace("adduser ", string.Empty)}* with error\n{e.Message}");
                     }
                     break;
                 case "removeuser":
@@ -283,7 +279,7 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to remove user *{args.Replace("removeuser ", string.Empty)}* but I got you this error:\n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to remove user *{args.Replace("removeuser ", string.Empty)}* but I got you this error:\n{e.Message}");
                     }
                     break;
                 case "addtime":
@@ -357,7 +353,7 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to create that scheduled segment but I got you this error:\n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to create that scheduled segment but I got you this error:\n{e.Message}");
                     }
                     break;
                 case "removetime":
@@ -431,7 +427,7 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to remove scheduled segment but I got you this error:\n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to remove scheduled segment but I got you this error:\n{e.Message}");
                     }
                     break;
                 case "schedule":
@@ -551,7 +547,7 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to generate the heatmap but I got you this error:\n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I failed to generate the heatmap but I got you this error:\n{e.Message}");
                     }
                     break;
                 case "?":
@@ -610,21 +606,21 @@ namespace csharpi.Modules
                 DataSet data = new DataSet();
                 adapter.Fill(data);
 
-                if (data.Tables[0].Rows.Count == 0)
+                
+                foreach (DataRow r in data.Tables[0].Rows)
+                {
+                    scheduledContents.Add(new ScheduledContent(r.RowStrings()));
+                }
+
+                scheduledContents.RemoveAll(x => x.UserName != $"<@!{user.Id}>");
+
+                if (scheduledContents.Count == 0)
                 {
                     embed.Color = new Color(255, 0, 0);
                     sb.AppendLine($"Sorry <@!{user.Id}>, looks like you don't have any content yet.");
-                    
                 }
                 else 
                 {
-                    foreach (DataRow r in data.Tables[0].Rows)
-                    {
-                        scheduledContents.Add(new ScheduledContent(r.RowStrings()));
-                    }
-
-                    scheduledContents.RemoveAll(x => x.UserName != $"<@!{user.Id}>");
-
                     foreach (ScheduledContent s in scheduledContents)
                     {
                         string completeString = s.Complete ? $"Marked complete on {s.CompleteDateTime}" : "Not complete";
@@ -635,7 +631,7 @@ namespace csharpi.Modules
             catch (Exception e)
             {
                 embed.Color = new Color(255, 0, 0);
-                sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}");
             }
 
             embed.Description = sb.ToString();
@@ -695,7 +691,7 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}");
                     }
                     break;
                 case "version":
@@ -734,7 +730,7 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}");
                     }
                     break;
                 case "filter":
@@ -783,6 +779,7 @@ namespace csharpi.Modules
                         catch(Exception e)
                         {
                             typeID = types.Find(x => x.Value.ToLower() == parameters[0]).ID;
+                            e.ToString().PrintLogMessage("Error caught: ", LogSeverity.Error);
                         }
 
                         try
@@ -792,13 +789,15 @@ namespace csharpi.Modules
                         catch(Exception e)
                         {
                             versionID = versions.Find(x => x.Value.ToLower() == parameters[1]).ID;
+                            e.ToString().PrintLogMessage("Error caught: ", LogSeverity.Error);
                         }
 
                         command = new MySqlStoredProcedure("usp_Get_Duty", 
                             new MySqlParameter[] 
                             {
                                 new MySqlParameter("@type", typeID),
-                                new MySqlParameter("@version", versionID)
+                                new MySqlParameter("@version", versionID),
+                                new MySqlParameter("@action", 'f')
                             }, connection);
                         adapter = new MySqlDataAdapter(command);
                         command.ExecuteNonQuery();
@@ -828,15 +827,108 @@ namespace csharpi.Modules
                     catch (Exception e)
                     {
                         embed.Color = new Color(255, 0, 0);
-                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}\n{Shrug}");
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get your content but I got you this error instead: \n{e.Message}");
                     }
                     break;
-                // case "add":
-                //     //
-                //     break;
-                // case "remove":
-                //     //
-                //     break;
+                case "add":
+                    try
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+                        
+                        List<Duty> duties = new List<Duty>();
+                        DatabaseUser databaseUser;
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Duty", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'a')
+                            }, connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            duties.Add(new Duty(r.RowStrings()));
+                        }
+
+                        command = new MySqlStoredProcedure("usp_Get_User", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 's'),
+                                new MySqlParameter("@name", $"<@!{user.Id}>")
+                            }, 
+                            connection);
+
+                        adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+                        data = new DataSet();
+                        adapter.Fill(data);
+
+                        databaseUser = new DatabaseUser(data.Tables[0].Rows[0].RowStrings());
+                        Duty duty = duties.Find(x => x.ID == int.Parse(args.Replace("add ", string.Empty)));
+
+                        command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'i'),
+                                new MySqlParameter("@name", databaseUser.UserID),
+                                new MySqlParameter("@dutyID", duty.ID)
+                            }, 
+                            connection);
+                        command.ExecuteNonQuery();
+
+                        sb.AppendLine($"Successfully added {duty.Title} to your scheduled content!");
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I wasn't able to add that content but I got you this error instead: \n{e.Message}");
+                    }
+                    break;
+                case "remove":
+                    try
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            scheduledContents.Add(new ScheduledContent(r.RowStrings()));
+                        }
+
+                        ScheduledContent content = scheduledContents.Find(x => x.ID == int.Parse(args.Replace("remove ", string.Empty)));
+
+                        command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'd'),
+                                new MySqlParameter("@scheduledContentID", content.ID)
+                            }, 
+                            connection);
+                        command.ExecuteNonQuery();
+
+                        sb.AppendLine($"Successfully removed {content.Title} from your scheduled content!");
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't remove that from your content but I got you this error instead: \n{e.Message}");
+                    }
+                    break;
                 // case "markcomplete":
                 //     //
                 //     break;
@@ -867,7 +959,7 @@ namespace csharpi.Modules
                     sb.AppendLine();
                     sb.AppendLine("Please note the following:");
                     sb.AppendLine("1) For ease of use you can either type out the full type/version of content you want, or just use the IDs provided.");
-                    sb.AppendLine("2) When marking content as complete, or removing it, be sure to use '$scheduling all' to get the ID before attempting it.");
+                    sb.AppendLine("2) When marking content as complete, or removing it, be sure to use '$content all' to get the ID before attempting it.");
                     sb.AppendLine("3) You do not need to specify a user when adding content - it's always against your name.");
                     break;
                 default:
@@ -880,8 +972,6 @@ namespace csharpi.Modules
             embed.Description = sb.ToString();
             await ReplyAsync(null, false, embed.Build());
         }
-
-        public static string Shrug { get => "¯\\_(⊙_ʖ⊙)_/¯"; }
     }
 
 }
