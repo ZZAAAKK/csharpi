@@ -936,15 +936,137 @@ namespace csharpi.Modules
                         sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't remove that from your content but I got you this error instead: \n{e.Message}");
                     }
                     break;
-                // case "markcomplete":
-                //     //
-                //     break;
-                // case "all":
-                //     //
-                //     break;
-                // case "random":
-                //     //
-                //     break;
+                case "markcomplete":
+                    try
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            scheduledContents.Add(new ScheduledContent(r.RowStrings()));
+                        }
+
+                        ScheduledContent content = scheduledContents.Find(x => x.ID == int.Parse(args.Replace("remove ", string.Empty)));
+
+                        command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
+                            new MySqlParameter[] 
+                            {
+                                new MySqlParameter("@action", 'u'),
+                                new MySqlParameter("@user", 0),
+                                new MySqlParameter("@dutyID", 0),
+                                new MySqlParameter("@compTimeStamp", DateTime.Now),
+                                new MySqlParameter("@scheduledContentID", content.ID)
+                            }, 
+                            connection);
+                        command.ExecuteNonQuery();
+
+                        sb.AppendLine($"Successfully marked {content.Title} as complete!");
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I wasn't able to update that but I got you this error instead: \n{e.Message}");
+                    }
+                    break;
+                case "all":
+                    try
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            scheduledContents.Add(new ScheduledContent(r.RowStrings()));
+                        }
+
+                        if (scheduledContents.Count == 0)
+                        {
+                            embed.Color = new Color(255, 0, 0);
+                            sb.AppendLine($"Sorry <@!{user.Id}>, looks like there isn't any content yet.");
+                        }
+                        else 
+                        {
+                            foreach (ScheduledContent s in scheduledContents) 
+                            {
+                                if (!s.Complete) 
+                                {
+                                    sb.AppendLine($"{s.Title} -> Added by {s.UserName} (ID = {s.ID})");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get the content you asked for but I got you this error instead: \n{e.Message}");
+                    }
+                    break;
+                case "random":
+                    embed.Title = "Random Content:";
+                    Random random = new Random();
+                    int red = random.Next(0, 255);
+                    int green = ~red;
+                    int blue = ~(red ^ green);
+
+                    embed.Color = new Color(red, green, blue);
+
+                    try
+                    {
+                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        connection.Open();
+
+                        List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
+
+                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        command.ExecuteNonQuery();
+
+                        DataSet data = new DataSet();
+                        adapter.Fill(data);
+
+                        
+                        foreach (DataRow r in data.Tables[0].Rows)
+                        {
+                            scheduledContents.Add(new ScheduledContent(r.RowStrings()));
+                        }
+
+                        if (scheduledContents.Count == 0)
+                        {
+                            embed.Color = new Color(255, 0, 0);
+                            sb.AppendLine($"Sorry <@!{user.Id}>, looks like there isn't any content yet.");
+                        }
+                        else 
+                        {
+                            ScheduledContent content = scheduledContents[random.Next(0, scheduledContents.Count - 1)];
+                            sb.AppendLine($"{content.Title} -> Added by {content.UserName} (ID = {content.ID})");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        embed.Color = new Color(255, 0, 0);
+                        sb.AppendLine($"Sorry <@!{user.Id}>, I couldn't get the content you asked for but I got you this error instead: \n{e.Message}");
+                    }
+                    break;
                 case "?":
                 case "help":
                     embed.WithColor(new Color(0, 0, 0));
