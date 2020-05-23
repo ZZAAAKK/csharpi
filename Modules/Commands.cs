@@ -623,7 +623,7 @@ namespace csharpi.Modules
                 {
                     foreach (ScheduledContent s in scheduledContents)
                     {
-                        string completeString = s.Complete ? $"Marked complete on {s.CompleteDateTime}" : "Not complete";
+                        string completeString = s.Complete == 1 ? $"Marked complete on {s.CompleteDateTime}" : "Not complete";
                         sb.AppendLine($"{s.Title} -> {completeString} (ID = {s.ID})");
                     }
                 }
@@ -999,7 +999,7 @@ namespace csharpi.Modules
                             scheduledContents.Add(new ScheduledContent(r.RowStrings()));
                         }
 
-                        if (scheduledContents.FindAll(x => !x.Complete).Count == 0)
+                        if (scheduledContents.FindAll(x => x.Complete == 0).Count == 0)
                         {
                             embed.Color = new Color(255, 0, 0);
                             sb.AppendLine($"Sorry <@!{user.Id}>, looks like there isn't any content yet.");
@@ -1008,7 +1008,7 @@ namespace csharpi.Modules
                         {
                             foreach (ScheduledContent s in scheduledContents) 
                             {
-                                if (!s.Complete) 
+                                if (s.Complete == 0) 
                                 {
                                     sb.AppendLine($"{s.Title} -> Added by {s.UserName} (ID = {s.ID})");
                                 }
