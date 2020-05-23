@@ -1025,8 +1025,8 @@ namespace csharpi.Modules
                     embed.Title = "Random Content:";
                     Random random = new Random();
                     int red = random.Next(0, 255);
-                    int green = ~red;
-                    int blue = ~(red ^ green);
+                    int green = random.Next(0, 255);
+                    int blue = random.Next(0, 255);
 
                     embed.Color = new Color(red, green, blue);
 
