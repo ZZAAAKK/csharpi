@@ -877,7 +877,7 @@ namespace csharpi.Modules
                             new MySqlParameter[] 
                             {
                                 new MySqlParameter("@action", 'i'),
-                                new MySqlParameter("@name", databaseUser.UserID),
+                                new MySqlParameter("@user", databaseUser.UserID),
                                 new MySqlParameter("@dutyID", duty.ID)
                             }, 
                             connection);
