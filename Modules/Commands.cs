@@ -624,7 +624,7 @@ namespace csharpi.Modules
                     foreach (ScheduledContent s in scheduledContents)
                     {
                         string completeString = s.Complete ? $"Marked complete on {s.CompleteDateTime}" : "Not complete";
-                        sb.AppendLine($"{s.Title} -> {completeString} (ID = {s.ID}");
+                        sb.AppendLine($"{s.Title} -> {completeString} (ID = {s.ID})");
                     }
                 }
             }
