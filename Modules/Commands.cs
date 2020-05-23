@@ -999,7 +999,9 @@ namespace csharpi.Modules
                             scheduledContents.Add(new ScheduledContent(r.RowStrings()));
                         }
 
-                        if (scheduledContents.FindAll(x => x.Complete == 0).Count == 0)
+                        scheduledContents.RemoveAll(x => x.Complete != 0);
+
+                        if (scheduledContents.Count == 0)
                         {
                             embed.Color = new Color(255, 0, 0);
                             sb.AppendLine($"Sorry <@!{user.Id}>, looks like there isn't any content yet.");
@@ -1049,6 +1051,8 @@ namespace csharpi.Modules
                         {
                             scheduledContents.Add(new ScheduledContent(r.RowStrings()));
                         }
+
+                        scheduledContents.RemoveAll(x => x.Complete != 0);
 
                         if (scheduledContents.Count == 0)
                         {
