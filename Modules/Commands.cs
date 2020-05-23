@@ -878,7 +878,9 @@ namespace csharpi.Modules
                             {
                                 new MySqlParameter("@action", 'i'),
                                 new MySqlParameter("@user", databaseUser.UserID),
-                                new MySqlParameter("@dutyID", duty.ID)
+                                new MySqlParameter("@dutyID", duty.ID),
+                                new MySqlParameter("@compTimeStamp", DateTime.Now),
+                                new MySqlParameter("@scheduledContentID", 0)
                             }, 
                             connection);
                         command.ExecuteNonQuery();
@@ -918,6 +920,9 @@ namespace csharpi.Modules
                             new MySqlParameter[] 
                             {
                                 new MySqlParameter("@action", 'd'),
+                                new MySqlParameter("@user", 0),
+                                new MySqlParameter("@dutyID", 0),
+                                new MySqlParameter("@compTimeStamp", DateTime.Now),
                                 new MySqlParameter("@scheduledContentID", content.ID)
                             }, 
                             connection);
