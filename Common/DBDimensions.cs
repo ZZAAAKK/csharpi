@@ -124,7 +124,7 @@ namespace csharpi.Dimensions
         public int AverageItemLevel { get; private set; }
         public string Type { get; private set; }
         public string Version { get; private set; }
-        public bool Complete { get; private set; }
+        public int Complete { get; private set; }
         public DateTime? CompleteDateTime { get; private set; }
 
         public ScheduledContent(string[] properties) 
@@ -136,7 +136,7 @@ namespace csharpi.Dimensions
             AverageItemLevel = int.Parse(properties[4]);
             Type = properties[5];
             Version = properties[6];
-            Complete = Convert.ToBoolean(properties[7]);
+            Complete = int.Parse(properties[7]);
             CompleteDateTime = null;
             if (properties[8] != "")
             {
