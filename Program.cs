@@ -38,6 +38,7 @@ namespace csharpi
                 _client = client;
                 client.Log += LogAsync;
                 client.Ready += ReadyAsync;
+                
                 services.GetRequiredService<CommandService>().Log += LogAsync;
 
                 await client.LoginAsync(TokenType.Bot, _config["Token"]);

@@ -36,33 +36,33 @@ namespace csharpi.Extensions
     }
 
     public struct MySqlStoredProcedure
+    {
+        public string Name {get; private set;}
+        public List<MySqlParameter> Parameters {get;private set;}
+        public MySqlConnection Connection {get;private set;}
+
+        public MySqlStoredProcedure(string name, MySqlConnection connection)
         {
-            public string Name {get; private set;}
-            public List<MySqlParameter> Parameters {get;private set;}
-            public MySqlConnection Connection {get;private set;}
-
-            public MySqlStoredProcedure(string name, MySqlConnection connection)
-            {
-                Name = name;
-                Parameters = new List<MySqlParameter>();
-                Connection = connection;
-            }
-
-            public MySqlStoredProcedure(string name, MySqlParameter[] parameters, MySqlConnection connection)
-            {
-                Name = name;
-                Parameters = new List<MySqlParameter>();
-                Parameters.AddRange(parameters.ToList());
-                Connection = connection;
-            }
-
-            public static implicit operator MySqlCommand(MySqlStoredProcedure procedure)
-            {
-                MySqlCommand command = new MySqlCommand(procedure.Name, procedure.Connection);
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddRange(procedure.Parameters.ToArray());
-
-                return command;
-            }
+            Name = name;
+            Parameters = new List<MySqlParameter>();
+            Connection = connection;
         }
+
+        public MySqlStoredProcedure(string name, MySqlParameter[] parameters, MySqlConnection connection)
+        {
+            Name = name;
+            Parameters = new List<MySqlParameter>();
+            Parameters.AddRange(parameters.ToList());
+            Connection = connection;
+        }
+
+        public static implicit operator MySqlCommand(MySqlStoredProcedure procedure)
+        {
+            MySqlCommand command = new MySqlCommand(procedure.Name, procedure.Connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddRange(procedure.Parameters.ToArray());
+
+            return command;
+        }
+    }
 }
