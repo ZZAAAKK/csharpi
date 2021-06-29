@@ -3,7 +3,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Discord.Commands;
 using System;
-using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +13,7 @@ using csharpi;
 using csharpi.Extensions;
 using csharpi.Dimensions;
 using csharpi.Common;
-using MySql.Data;
-using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace csharpi.Modules
 {
@@ -70,12 +69,12 @@ namespace csharpi.Modules
         //[RequireUserPermission(GuildPermission.KickMembers)]
         public async Task GetWeekdays()
         {
-            MySqlConnection connection = new MySqlConnection(ConnectionString);
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
 
             List<Weekday> weekdays = new List<Weekday>();
 
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Weekdays", connection)))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(new SqlStoredProcedure("usp_Get_Weekdays", connection)))
             {
                 DataSet data = new DataSet();
                 adapter.Fill(data);
@@ -107,12 +106,12 @@ namespace csharpi.Modules
         [Command("segments")]
         public async Task GetSegments()
         {
-            MySqlConnection connection = new MySqlConnection(ConnectionString);
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
 
             List<Segment> segments = new List<Segment>();
 
-            using (MySqlDataAdapter adapter = new MySqlDataAdapter(new MySqlStoredProcedure("usp_Get_Segment", connection)))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(new SqlStoredProcedure("usp_Get_Segment", connection)))
             {
                 DataSet data = new DataSet();
                 adapter.Fill(data);
@@ -149,18 +148,18 @@ namespace csharpi.Modules
 
             List<Schedule> schedules = new List<Schedule>();
 
-            MySqlConnection connection = new MySqlConnection(ConnectionString);
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
 
-            MySqlCommand command = new MySqlStoredProcedure("usp_Get_Schedule", 
-                new MySqlParameter[] 
+            SqlCommand command = new SqlStoredProcedure("usp_Get_Schedule", 
+                new SqlParameter[] 
                 {
-                    new MySqlParameter("@action", 's'),
-                    new MySqlParameter("@name", $"<@!{user.Id}>")
+                    new SqlParameter("@action", 's'),
+                    new SqlParameter("@name", $"<@!{user.Id}>")
                 }, 
                 connection);
 
-            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
             command.ExecuteNonQuery();
             DataSet data = new DataSet();
             adapter.Fill(data);
@@ -200,18 +199,18 @@ namespace csharpi.Modules
                 case "users":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_User", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'a'),
-                                new MySqlParameter("@name", string.Empty)
+                                new SqlParameter("@action", 'a'),
+                                new SqlParameter("@name", string.Empty)
                             }, 
                             connection);
 
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -239,14 +238,14 @@ namespace csharpi.Modules
                 case "adduser":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Set_User", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Set_User", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@id", args.Replace("adduser ", string.Empty)),
-                                new MySqlParameter("@name", Program._client.GetUser(ulong.Parse(args.Replace("adduser ", string.Empty).Replace("<@!", string.Empty).Replace(">", string.Empty))).Username)
+                                new SqlParameter("@id", args.Replace("adduser ", string.Empty)),
+                                new SqlParameter("@name", Program._client.GetUser(ulong.Parse(args.Replace("adduser ", string.Empty).Replace("<@!", string.Empty).Replace(">", string.Empty))).Username)
                             }, 
                             connection);
 
@@ -262,13 +261,13 @@ namespace csharpi.Modules
                 case "removeuser":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Delete_User", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Delete_User", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@name", args.Replace("removeuser ", string.Empty))
+                                new SqlParameter("@name", args.Replace("removeuser ", string.Empty))
                             }, 
                             connection);
 
@@ -289,27 +288,27 @@ namespace csharpi.Modules
                         List<Weekday> weekdays = new List<Weekday>();
                         List<Segment> segments = new List<Segment>();
 
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_User", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 's'),
-                                new MySqlParameter("@name", $"<@!{user.Id}>")
+                                new SqlParameter("@action", 's'),
+                                new SqlParameter("@name", $"<@!{user.Id}>")
                             }, 
                             connection);
 
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         DataSet data = new DataSet();
                         adapter.Fill(data);
 
                         databaseUser = new DatabaseUser(data.Tables[0].Rows[0].RowStrings());
 
-                        command = new MySqlStoredProcedure("usp_Get_Segment", connection);
+                        command = new SqlStoredProcedure("usp_Get_Segment", connection);
 
-                        adapter = new MySqlDataAdapter(command);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         data = new DataSet();
                         adapter.Fill(data);
@@ -319,9 +318,9 @@ namespace csharpi.Modules
                             segments.Add(new Segment(r.RowStrings()));
                         }
 
-                        command = new MySqlStoredProcedure("usp_Get_Weekdays", connection);
+                        command = new SqlStoredProcedure("usp_Get_Weekdays", connection);
 
-                        adapter = new MySqlDataAdapter(command);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         data = new DataSet();
                         adapter.Fill(data);
@@ -333,13 +332,13 @@ namespace csharpi.Modules
 
                         string[] parameters = args.Replace("addtime ", string.Empty).ToUpper().Replace(" ", string.Empty).Split(';');
 
-                        command = new MySqlStoredProcedure("usp_Set_Schedule",
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Set_Schedule",
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'i'),
-                                new MySqlParameter("@user", databaseUser.UserID),
-                                new MySqlParameter("@day", weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).DayID),
-                                new MySqlParameter("@seg", segments.Find(x => x.Name.ToUpper() == parameters[1]).SegmentID)
+                                new SqlParameter("@action", 'i'),
+                                new SqlParameter("@user", databaseUser.UserID),
+                                new SqlParameter("@day", weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).DayID),
+                                new SqlParameter("@seg", segments.Find(x => x.Name.ToUpper() == parameters[1]).SegmentID)
                             },
                             connection);
 
@@ -363,27 +362,27 @@ namespace csharpi.Modules
                         List<Weekday> weekdays = new List<Weekday>();
                         List<Segment> segments = new List<Segment>();
 
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_User", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_User", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 's'),
-                                new MySqlParameter("@name", $"<@!{user.Id}>")
+                                new SqlParameter("@action", 's'),
+                                new SqlParameter("@name", $"<@!{user.Id}>")
                             }, 
                             connection);
 
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         DataSet data = new DataSet();
                         adapter.Fill(data);
 
                         databaseUser = new DatabaseUser(data.Tables[0].Rows[0].RowStrings());
 
-                        command = new MySqlStoredProcedure("usp_Get_Segment", connection);
+                        command = new SqlStoredProcedure("usp_Get_Segment", connection);
 
-                        adapter = new MySqlDataAdapter(command);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         data = new DataSet();
                         adapter.Fill(data);
@@ -393,9 +392,9 @@ namespace csharpi.Modules
                             segments.Add(new Segment(r.RowStrings()));
                         }
 
-                        command = new MySqlStoredProcedure("usp_Get_Weekdays", connection);
+                        command = new SqlStoredProcedure("usp_Get_Weekdays", connection);
 
-                        adapter = new MySqlDataAdapter(command);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         data = new DataSet();
                         adapter.Fill(data);
@@ -407,13 +406,13 @@ namespace csharpi.Modules
 
                         string[] parameters = args.Replace("removetime ", string.Empty).ToUpper().Replace(" ", string.Empty).Split(';');
 
-                        command = new MySqlStoredProcedure("usp_Set_Schedule",
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Set_Schedule",
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'd'),
-                                new MySqlParameter("@user", databaseUser.UserID),
-                                new MySqlParameter("@day", weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).DayID),
-                                new MySqlParameter("@seg", segments.Find(x => x.Name.ToUpper() == parameters[1]).SegmentID)
+                                new SqlParameter("@action", 'd'),
+                                new SqlParameter("@user", databaseUser.UserID),
+                                new SqlParameter("@day", weekdays.Find(x => x.LongName.ToUpper() == parameters[0] || x.ShortName.ToUpper() == parameters[0]).DayID),
+                                new SqlParameter("@seg", segments.Find(x => x.Name.ToUpper() == parameters[1]).SegmentID)
                             },
                             connection);
 
@@ -435,18 +434,18 @@ namespace csharpi.Modules
                     {
                         List<HeatmapRow> heatmapRows = new List<HeatmapRow>();
 
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Schedule", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Schedule", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'h'),
-                                new MySqlParameter("@name", string.Empty)
+                                new SqlParameter("@action", 'h'),
+                                new SqlParameter("@name", string.Empty)
                             }, 
                             connection);
 
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         DataSet data = new DataSet();
                         adapter.Fill(data);
@@ -594,13 +593,13 @@ namespace csharpi.Modules
 
             try
             {
-                MySqlConnection connection = new MySqlConnection(ConnectionString);
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
 
                 List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
 
-                MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
-                MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                SqlCommand command = new SqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
                 command.ExecuteNonQuery();
 
                 DataSet data = new DataSet();
@@ -658,13 +657,13 @@ namespace csharpi.Modules
                 case "type":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ContentType> types = new List<ContentType>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Content_Type", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Content_Type", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -697,13 +696,13 @@ namespace csharpi.Modules
                 case "version":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ContentVersion> versions = new List<ContentVersion>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Content_Version", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Content_Version", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -736,15 +735,15 @@ namespace csharpi.Modules
                 case "filter":
                     try 
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ContentType> types = new List<ContentType>();
                         List<ContentVersion> versions = new List<ContentVersion>();
                         List<Duty> duties = new List<Duty>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Content_Type", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Content_Type", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -755,8 +754,8 @@ namespace csharpi.Modules
                             types.Add(new ContentType(r.RowStrings()));
                         }
 
-                        command = new MySqlStoredProcedure("usp_Get_Content_Version", connection);
-                        adapter = new MySqlDataAdapter(command);
+                        command = new SqlStoredProcedure("usp_Get_Content_Version", connection);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         data = new DataSet();
@@ -792,14 +791,14 @@ namespace csharpi.Modules
                             e.ToString().PrintLogMessage("Error caught: ", LogSeverity.Error);
                         }
 
-                        command = new MySqlStoredProcedure("usp_Get_Duty", 
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Get_Duty", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@type", typeID),
-                                new MySqlParameter("@version", versionID),
-                                new MySqlParameter("@action", 'f')
+                                new SqlParameter("@type", typeID),
+                                new SqlParameter("@version", versionID),
+                                new SqlParameter("@action", 'f')
                             }, connection);
-                        adapter = new MySqlDataAdapter(command);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         data = new DataSet();
@@ -833,20 +832,20 @@ namespace csharpi.Modules
                 case "add":
                     try
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
                         
                         List<Duty> duties = new List<Duty>();
                         DatabaseUser databaseUser;
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Duty", 
-                            new MySqlParameter[] 
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Duty", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'a'),
-                                new MySqlParameter("@type", 0),
-                                new MySqlParameter("@version", 0)
+                                new SqlParameter("@action", 'a'),
+                                new SqlParameter("@type", 0),
+                                new SqlParameter("@version", 0)
                             }, connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -857,15 +856,15 @@ namespace csharpi.Modules
                             duties.Add(new Duty(r.RowStrings()));
                         }
 
-                        command = new MySqlStoredProcedure("usp_Get_User", 
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Get_User", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 's'),
-                                new MySqlParameter("@name", $"<@!{user.Id}>")
+                                new SqlParameter("@action", 's'),
+                                new SqlParameter("@name", $"<@!{user.Id}>")
                             }, 
                             connection);
 
-                        adapter = new MySqlDataAdapter(command);
+                        adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
                         data = new DataSet();
                         adapter.Fill(data);
@@ -873,14 +872,14 @@ namespace csharpi.Modules
                         databaseUser = new DatabaseUser(data.Tables[0].Rows[0].RowStrings());
                         Duty duty = duties.Find(x => x.ID == int.Parse(args.Replace("add ", string.Empty)));
 
-                        command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Set_Scheduled_Content", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'i'),
-                                new MySqlParameter("@user", databaseUser.UserID),
-                                new MySqlParameter("@dutyID", duty.ID),
-                                new MySqlParameter("@compTimeStamp", DateTime.Now),
-                                new MySqlParameter("@scheduledContentID", 0)
+                                new SqlParameter("@action", 'i'),
+                                new SqlParameter("@user", databaseUser.UserID),
+                                new SqlParameter("@dutyID", duty.ID),
+                                new SqlParameter("@compTimeStamp", DateTime.Now),
+                                new SqlParameter("@scheduledContentID", 0)
                             }, 
                             connection);
                         command.ExecuteNonQuery();
@@ -896,13 +895,13 @@ namespace csharpi.Modules
                 case "remove":
                     try
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -916,14 +915,14 @@ namespace csharpi.Modules
 
                         ScheduledContent content = scheduledContents.Find(x => x.ID == int.Parse(args.Replace("remove ", string.Empty)));
 
-                        command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Set_Scheduled_Content", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'd'),
-                                new MySqlParameter("@user", 0),
-                                new MySqlParameter("@dutyID", 0),
-                                new MySqlParameter("@compTimeStamp", DateTime.Now),
-                                new MySqlParameter("@scheduledContentID", content.ID)
+                                new SqlParameter("@action", 'd'),
+                                new SqlParameter("@user", 0),
+                                new SqlParameter("@dutyID", 0),
+                                new SqlParameter("@compTimeStamp", DateTime.Now),
+                                new SqlParameter("@scheduledContentID", content.ID)
                             }, 
                             connection);
                         command.ExecuteNonQuery();
@@ -939,13 +938,13 @@ namespace csharpi.Modules
                 case "markcomplete":
                     try
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -958,14 +957,14 @@ namespace csharpi.Modules
 
                         ScheduledContent content = scheduledContents.Find(x => x.ID == int.Parse(args.Replace("markcomplete ", string.Empty)));
 
-                        command = new MySqlStoredProcedure("usp_Set_Scheduled_Content", 
-                            new MySqlParameter[] 
+                        command = new SqlStoredProcedure("usp_Set_Scheduled_Content", 
+                            new SqlParameter[] 
                             {
-                                new MySqlParameter("@action", 'u'),
-                                new MySqlParameter("@user", 0),
-                                new MySqlParameter("@dutyID", 0),
-                                new MySqlParameter("@compTimeStamp", DateTime.Now),
-                                new MySqlParameter("@scheduledContentID", content.ID)
+                                new SqlParameter("@action", 'u'),
+                                new SqlParameter("@user", 0),
+                                new SqlParameter("@dutyID", 0),
+                                new SqlParameter("@compTimeStamp", DateTime.Now),
+                                new SqlParameter("@scheduledContentID", content.ID)
                             }, 
                             connection);
                         command.ExecuteNonQuery();
@@ -981,13 +980,13 @@ namespace csharpi.Modules
                 case "all":
                     try
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -1034,13 +1033,13 @@ namespace csharpi.Modules
 
                     try
                     {
-                        MySqlConnection connection = new MySqlConnection(ConnectionString);
+                        SqlConnection connection = new SqlConnection(ConnectionString);
                         connection.Open();
 
                         List<ScheduledContent> scheduledContents = new List<ScheduledContent>();
 
-                        MySqlCommand command = new MySqlStoredProcedure("usp_Get_Scheduled_Content", connection);
-                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        SqlCommand command = new SqlStoredProcedure("usp_Get_Scheduled_Content", connection);
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         command.ExecuteNonQuery();
 
                         DataSet data = new DataSet();
@@ -1099,6 +1098,66 @@ namespace csharpi.Modules
                     sb.AppendLine($"Sorry <@!{user.Id}>, I didn't understand that.");
                     sb.AppendLine();
                     sb.AppendLine("Please type '$content help' or '$content ?' for a list of commands.");
+                    break;
+            }
+
+            embed.Description = sb.ToString();
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+        [Command("swiftcraft")]
+        public async Task MinecraftServerWork([Remainder]string args = null){
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+            var user = Context.User;
+
+            var ipAddress = "192.168.0.41";
+
+            switch (args.Trim().ToLower())
+            {
+                case "start":
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Swiftcraft Start";
+
+                    sb.AppendLine($"Huzzah! The server is now running. You can access it at {ipAddress}:25565.");
+                    sb.AppendLine("Type '$swiftcraft status' at any time to check the status, and joining details (if it's running).");
+                    break;
+                case "status":
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Swiftcraft Status";
+                    var status = "running";
+
+                    sb.AppendLine($"The server is now {status}. You can access it at {ipAddress}:25565.");
+                    break;
+                case "stop":
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Swiftcraft Stop";
+
+                    sb.AppendLine($"The server is now closed.");
+                    break;
+                case "help":
+                case "?":
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Swiftcraft Help";
+
+                    sb.AppendLine("You can use the following commands with $swiftcraft:");
+                    sb.AppendLine();
+                    sb.AppendLine("start*");
+                    sb.AppendLine("status");
+                    sb.AppendLine("stop*");
+                    sb.AppendLine("help");
+                    sb.AppendLine("?");
+                    sb.AppendLine();
+                    sb.AppendLine("Please note the following:");
+                    sb.AppendLine("1) You must be Swift in order to start/stop the server.");
+                    sb.AppendLine("2) Anyone can query the status of the server at any time.");
+                    sb.AppendLine("3) Just send Swift a DM at any time and he'll likely start the server straight away.");
+                    break;
+                default:
+                    embed.WithColor(new Color(0, 0, 0));
+                    embed.Title = "Swiftcraft Error";
+
+                    sb.AppendLine($"Whatever you entered there (specifically {args}) didn't work. Type '$swiftcraft help' for help.");
                     break;
             }
 

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Discord;
 using csharpi.Common;
 using csharpi.Extensions;
-using MySql.Data.MySqlClient;
 
 namespace csharpi.Dimensions
 {
@@ -41,7 +40,7 @@ namespace csharpi.Dimensions
     {
         public int SegmentID { get; private set; }
         public string Name { get; private set; }
-
+        
         public Segment (string[] properties) 
         {
             SegmentID = int.Parse(properties[0]);

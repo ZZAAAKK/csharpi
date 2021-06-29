@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord;
 using System.Threading.Tasks;
-using MySql.Data;
-using MySql.Data.MySqlClient;
+using System.Data.Sql;
+using System.Data.SqlClient;
 
 namespace csharpi.Extensions
 {
@@ -35,30 +35,30 @@ namespace csharpi.Extensions
         }
     }
 
-    public struct MySqlStoredProcedure
+    public struct SqlStoredProcedure
     {
         public string Name {get; private set;}
-        public List<MySqlParameter> Parameters {get;private set;}
-        public MySqlConnection Connection {get;private set;}
+        public List<SqlParameter> Parameters {get;private set;}
+        public SqlConnection Connection {get;private set;}
 
-        public MySqlStoredProcedure(string name, MySqlConnection connection)
+        public SqlStoredProcedure(string name, SqlConnection connection)
         {
             Name = name;
-            Parameters = new List<MySqlParameter>();
+            Parameters = new List<SqlParameter>();
             Connection = connection;
         }
 
-        public MySqlStoredProcedure(string name, MySqlParameter[] parameters, MySqlConnection connection)
+        public SqlStoredProcedure(string name, SqlParameter[] parameters, SqlConnection connection)
         {
             Name = name;
-            Parameters = new List<MySqlParameter>();
+            Parameters = new List<SqlParameter>();
             Parameters.AddRange(parameters.ToList());
             Connection = connection;
         }
 
-        public static implicit operator MySqlCommand(MySqlStoredProcedure procedure)
+        public static implicit operator SqlCommand(SqlStoredProcedure procedure)
         {
-            MySqlCommand command = new MySqlCommand(procedure.Name, procedure.Connection);
+            SqlCommand command = new SqlCommand(procedure.Name, procedure.Connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddRange(procedure.Parameters.ToArray());
 
