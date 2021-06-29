@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharpi", "csharpi.csproj", "{4865130F-CBBA-4608-A1BE-41BAF768FF10}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4865130F-CBBA-4608-A1BE-41BAF768FF10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4865130F-CBBA-4608-A1BE-41BAF768FF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4865130F-CBBA-4608-A1BE-41BAF768FF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4865130F-CBBA-4608-A1BE-41BAF768FF10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {21F3EA53-E65D-4008-BA4C-66B2F23C96A8}
+	EndGlobalSection
+EndGlobal

@@ -1,10 +1,4 @@
 using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Discord;
-using csharpi.Common;
-using csharpi.Extensions;
 
 namespace csharpi.Dimensions
 {
